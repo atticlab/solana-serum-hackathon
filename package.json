@@ -10,10 +10,19 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@solana/web3.js": "^0.91.3",
+    "Base64": "^1.1.0",
+    "base-64": "^1.0.0",
+    "crypto": "^1.0.1",
+    "node-libs-browser": "^2.2.1",
+    "node-libs-react-native": "^1.2.1",
     "react": "16.13.1",
     "react-native": "0.63.4",
     "react-native-crypto": "^2.2.0",
-    "react-native-get-random-values": "^1.5.1"
+    "react-native-get-random-values": "^1.5.1",
+    "react-native-randombytes": "^3.6.0",
+    "superstruct": "^0.14.2",
+    "vm-browserify": "^1.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
