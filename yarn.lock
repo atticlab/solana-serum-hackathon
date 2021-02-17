@@ -719,6 +719,25 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
+"@hvrlk/solana@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@hvrlk/solana/-/solana-1.0.0.tgz#2efe36b3264a9bf9994b6296ea3fd0e3c54236e2"
+  integrity sha512-m5/E4md9qcFON1U5y86MvCZPOssnF7kJia2cpvn/oEXsMRwFP/HXhA8AP8/trS3TFet4UgKHBDnbKpHbHy0tig==
+  dependencies:
+    "@babel/runtime" "^7.12.5"
+    bn.js "^5.0.0"
+    bs58 "^4.0.1"
+    buffer "6.0.1"
+    buffer-layout "^1.2.0"
+    crypto-hash "^1.2.2"
+    jayson "^3.4.4"
+    js-sha3 "^0.8.0"
+    node-fetch "^2.6.1"
+    rpc-websockets "^7.4.2"
+    secp256k1 "^4.0.2"
+    superstruct "^0.8.3"
+    tweetnacl "^1.0.0"
+
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@istanbuljs/load-nyc-config/-/load-nyc-config-1.1.0.tgz"
@@ -1118,25 +1137,6 @@
   integrity sha512-MZPUxrmFubI36XS1DI3qmI0YdN1gks62JtFZvxR67ljjSNCeK6U08Zx4msEWOXuofgqUt6zPHSi1H9fbjR/NRA==
   dependencies:
     "@sinonjs/commons" "^1.7.0"
-
-"@solana/web3.js@^0.91.3":
-  version "0.91.3"
-  resolved "https://registry.yarnpkg.com/@solana/web3.js/-/web3.js-0.91.3.tgz#826c9ee01040177798b963bf5fb2b0f0662560bb"
-  integrity sha512-eMKJFDJewiTUEBHyQpk1h6aNQ6d1ac+hyzwzRxQKWzquQgbvNIKBTM2FxmeYF5Os1Vc9SEYG2+AyIWTtdjm0zw==
-  dependencies:
-    "@babel/runtime" "^7.12.5"
-    bn.js "^5.0.0"
-    bs58 "^4.0.1"
-    buffer "6.0.1"
-    buffer-layout "^1.2.0"
-    crypto-hash "^1.2.2"
-    jayson "^3.4.4"
-    js-sha3 "^0.8.0"
-    node-fetch "^2.6.1"
-    rpc-websockets "^7.4.2"
-    secp256k1 "^4.0.2"
-    superstruct "^0.8.3"
-    tweetnacl "^1.0.0"
 
 "@types/babel__core@^7.0.0", "@types/babel__core@^7.1.7":
   version "7.1.12"

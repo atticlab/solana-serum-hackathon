@@ -15,7 +15,7 @@ import {
   Colors,
 } from 'react-native/Libraries/NewAppScreen';
 
-const solanaWeb3 = require('@solana/web3.js');
+const solanaWeb3 = require('@hvrlk/solana');
 import * as BufferLayout from 'buffer-layout';
 
 const TOKEN_PROGRAM_ID = new solanaWeb3.PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
