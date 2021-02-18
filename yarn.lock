@@ -618,10 +618,17 @@
     pirates "^4.0.0"
     source-map-support "^0.5.16"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.13", "@babel/runtime@^7.12.5", "@babel/runtime@^7.8.4":
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.12.13", "@babel/runtime@^7.8.4":
   version "7.12.13"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.12.13.tgz"
   integrity sha512-8+3UMPBrjFa/6TtKi/7sehPKqfAm4g6K+YQjyyFOLUTxzOngcRZTlAVY8sc2CORJYqdHQY8gRPHmn+qo15rCBw==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
+"@babel/runtime@^7.11.2", "@babel/runtime@^7.12.5":
+  version "7.12.18"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.12.18.tgz#af137bd7e7d9705a412b3caaf991fe6aaa97831b"
+  integrity sha512-BogPQ7ciE6SYAUPtlm9tWbgI9+2AgqSam6QivMgXgAT+fKbgppaj4ZX15MHeLC1PVF5sNk70huBu20XxWOs8Cg==
   dependencies:
     regenerator-runtime "^0.13.4"
 
@@ -723,25 +730,6 @@
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@hvrlk/buffer-layout/-/buffer-layout-1.0.0.tgz#9b17f10f409e478b609805355e09086015669ec3"
   integrity sha512-uocWafAYbX+fUPPJu2EuSA7GGxrAxGDV8Q4ltkFbCDiYxFaLGHAgh0ypLNja41UZNsRJI1vN2Rwn8IUaHa5EIg==
-
-"@hvrlk/solana@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@hvrlk/solana/-/solana-1.0.1.tgz#f4e4ff7285a4a14cc14f521011c21b0cf9394439"
-  integrity sha512-B4IT0wILOhD7Dax7j9cwserDXAgMQTg7DgfYvVRW/Jpq8AE/TYUDGkqSQ7K8kWVDdnyaTsrfAWdD8SV4hbkedg==
-  dependencies:
-    "@babel/runtime" "^7.12.5"
-    "@hvrlk/buffer-layout" "1.0.0"
-    bn.js "^5.0.0"
-    bs58 "^4.0.1"
-    buffer "6.0.1"
-    crypto-hash "^1.2.2"
-    jayson "^3.4.4"
-    js-sha3 "^0.8.0"
-    node-fetch "^2.6.1"
-    rpc-websockets "^7.4.2"
-    secp256k1 "^4.0.2"
-    superstruct "^0.8.3"
-    tweetnacl "^1.0.0"
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
@@ -984,6 +972,25 @@
     "@types/node" "*"
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
+
+"@pragma-technologies/react-native-solana@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@pragma-technologies/react-native-solana/-/react-native-solana-1.0.0.tgz#47931c71c224df09451e559651195ef6b19357cb"
+  integrity sha512-RWZVpOEZ0xrOZaE7b/wJB6kywgVeBq2hfYySJI/7rJiUJFDX/qwpcpcZzL9IJM7p/qkis+0gc6eaC6ivz5j3mQ==
+  dependencies:
+    "@babel/runtime" "^7.12.5"
+    "@hvrlk/buffer-layout" "1.0.0"
+    bn.js "^5.0.0"
+    bs58 "^4.0.1"
+    buffer "6.0.1"
+    crypto-hash "^1.2.2"
+    jayson "^3.4.4"
+    js-sha3 "^0.8.0"
+    node-fetch "^2.6.1"
+    rpc-websockets "^7.4.2"
+    secp256k1 "^4.0.2"
+    superstruct "^0.8.3"
+    tweetnacl "^1.0.0"
 
 "@react-native-community/cli-debugger-ui@^4.13.1":
   version "4.13.1"
@@ -1247,9 +1254,9 @@
   integrity sha512-Ecfmo4YDQPwuqTCl1yBxLV5ihKfRlkBmzUEDcfIRvDxOTGQEeikr317Ln7Gcv0tjA8dVgKI3rniqW2G1OyKDng==
 
 "@types/node@^12.12.54":
-  version "12.20.1"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.20.1.tgz#63d36c10e162666f0107f247cdca76542c3c7472"
-  integrity sha512-tCkE96/ZTO+cWbln2xfyvd6ngHLanvVlJ3e5BeirJ3BYI5GbAyubIrmV4JjjugDly5D9fHjOL5MNsqsCnqwW6g==
+  version "12.20.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.20.2.tgz#9a57db42ebde16f006ddaa03d48eb253c9777b9f"
+  integrity sha512-djoyN0pvTje9Lpu25ZwZwlLQICPiuv42omiydLhl7om+og1RhQboGmar12KaKls8soTUQ893TuWCrlyt8B1pVg==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"

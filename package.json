@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@hvrlk/buffer-layout": "1.0.0",
-    "@hvrlk/solana": "1.0.1",
+    "@pragma-technologies/react-native-solana": "^1.0.0",
     "Base64": "^1.1.0",
     "base-64": "^1.0.0",
     "crypto": "^1.0.1",

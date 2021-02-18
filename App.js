@@ -15,7 +15,7 @@ import {
   Colors,
 } from 'react-native/Libraries/NewAppScreen';
 
-const solanaWeb3 = require('@hvrlk/solana');
+const solanaWeb3 = require('@pragma-technologies/react-native-solana');
 import * as BufferLayout from '@hvrlk/buffer-layout';
 
 const TOKEN_PROGRAM_ID = new solanaWeb3.PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
@@ -169,7 +169,7 @@ async function transferTokens(
 
 async function testCreateAndInitializeTokenAccount() {
   // const secret = Buffer.from([184,234,94,108,74,201,179,86,173,136,230,45,12,108,66,181,77,14,211,111,58,168,52,107,214,173,83,53,61,158,61,118,55,203,30,99,89,70,138,32,202,42,222,88,93,51,242,193,94,51,43,225,255,106,36,30,93,224,10,118,117,123,43,221]);
-  // const secret = Buffer.from([12,66,39,208,30,134,222,70,133,220,111,204,182,176,174,17,190,133,165,65,141,36,137,200,11,206,151,23,139,193,234,25,87,55,192,214,33,175,182,93,13,99,116,111,154,183,74,60,67,204,120,217,99,168,209,155,198,63,102,54,195,211,31,14]);
+  const secret = Buffer.from([12,66,39,208,30,134,222,70,133,220,111,204,182,176,174,17,190,133,165,65,141,36,137,200,11,206,151,23,139,193,234,25,87,55,192,214,33,175,182,93,13,99,116,111,154,183,74,60,67,204,120,217,99,168,209,155,198,63,102,54,195,211,31,14]);
 
   const account = new solanaWeb3.Account(secret);
   const connection = new solanaWeb3.Connection('https://devnet.solana.com');
@@ -196,9 +196,9 @@ async function testTransferTokens() {
 }
 
 const App: () => React$Node = () => {
-  // testTransferTokens()
-  //     .then(result => console.log(result))
-  //     .catch(error => console.log(error));
+  testCreateAndInitializeTokenAccount()
+      .then(result => console.log(result))
+      .catch(error => console.log(error));
 
 
   return (
