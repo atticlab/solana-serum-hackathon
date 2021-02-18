@@ -45,9 +45,9 @@ async function testTransferTokens() {
 }
 
 const App: () => React$Node = () => {
-  testTransferTokens()
-      .then(result => console.log(result))
-      .catch(error => console.log(error));
+  // testTransferTokens()
+  //     .then(result => console.log(result))
+  //     .catch(error => console.log(error));
 
 
   return (
