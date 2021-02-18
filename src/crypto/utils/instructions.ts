@@ -1,6 +1,5 @@
+import * as solanaWeb3 from '@pragma-technologies/react-native-solana';
 import {encodeTokenInstructionData, TOKEN_PROGRAM_ID} from "./constants";
-
-const solanaWeb3 = require('@pragma-technologies/react-native-solana');
 
 export function initializeAccountInstruction(
     account: solanaWeb3.PublicKey,

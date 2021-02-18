@@ -1,10 +1,8 @@
-import {ACCOUNT_LAYOUT, TOKEN_PROGRAM_ID} from "./utils/constants";
+import * as solanaWeb3 from '@pragma-technologies/react-native-solana';
+import {ACCOUNT_LAYOUT, connection, TOKEN_PROGRAM_ID} from "./utils/constants";
 import {initializeAccountInstruction} from "./utils/instructions";
 
-const solanaWeb3 = require('@pragma-technologies/react-native-solana');
-
 export async function createAndInitializeTokenAccount(
-    connection: solanaWeb3.Connection,
     payer: solanaWeb3.Account,
     mintPublicKey: solanaWeb3.PublicKey,
     newAccount: solanaWeb3.Account,

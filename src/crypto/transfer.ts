@@ -1,10 +1,8 @@
+import * as solanaWeb3 from '@pragma-technologies/react-native-solana';
 import {transfer} from "./utils/instructions";
-import {TOKEN_PROGRAM_ID} from "./utils/constants";
-
-const solanaWeb3 = require('@pragma-technologies/react-native-solana');
+import {connection, TOKEN_PROGRAM_ID} from "./utils/constants";
 
 export async function transferTokens(
-    connection: solanaWeb3.Connection,
     ownerAccount: solanaWeb3.Account,
     sourcePublicKey: solanaWeb3.PublicKey,
     destPublicKey: solanaWeb3.PublicKey,

@@ -1,6 +1,7 @@
 import * as BufferLayout from '@hvrlk/buffer-layout';
+import * as solanaWeb3 from '@pragma-technologies/react-native-solana';
 
-const solanaWeb3 = require('@pragma-technologies/react-native-solana');
+export const connection = new solanaWeb3.Connection('https://devnet.solana.com');
 
 export const TOKEN_PROGRAM_ID = new solanaWeb3.PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
 
