@@ -16,12 +16,10 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 const solanaWeb3 = require('@hvrlk/solana');
-import * as BufferLayout from 'buffer-layout';
+import * as BufferLayout from '@hvrlk/buffer-layout';
 
 const TOKEN_PROGRAM_ID = new solanaWeb3.PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
 
-// const MEMO_PROGRAM_ID = new solanaWeb3.PublicKey('Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo');
-//
 // const MINT_LAYOUT = BufferLayout.struct([
 //   BufferLayout.blob(44),
 //   BufferLayout.u8('decimals'),
@@ -60,65 +58,79 @@ function encodeTokenInstructionData(instruction) {
   return b.slice(0, span);
 }
 
-async function testWeb3() {
-  const secret = Buffer.from([184,234,94,108,74,201,179,86,173,136,230,45,12,108,66,181,77,14,211,111,58,168,52,107,214,173,83,53,61,158,61,118,55,203,30,99,89,70,138,32,202,42,222,88,93,51,242,193,94,51,43,225,255,106,36,30,93,224,10,118,117,123,43,221]);
-  const account = new solanaWeb3.Account(secret);
-  console.log('ACCOUNT: ', account.publicKey.toString());
-  const connection = new solanaWeb3.Connection('https://devnet.solana.com');
-
-  const accountData = await connection.getAccountInfo(account.publicKey);
-  console.log('ACCOUNT DATA: ', accountData);
-
-  const balance = await connection.getBalance(account.publicKey, 'max');
-  console.log('BALANCE: ', balance);
-
-  const lamportsForAccount = await connection.getMinimumBalanceForRentExemption(ACCOUNT_LAYOUT.span);
-  console.log('BALANCE FOR RENT: ', lamportsForAccount);
-
-  const transaction = new solanaWeb3.Transaction();
-
-  const newAccount = new solanaWeb3.Account();
-  console.log('NEW ACCOUNT PK: ', newAccount.publicKey);
-
-  transaction.add(
-      solanaWeb3.SystemProgram.createAccount({
-        fromPubkey: account.publicKey,
-        newAccountPubkey: newAccount.publicKey,
-        lamports: lamportsForAccount,
-        space: ACCOUNT_LAYOUT.span,
-        programId: new solanaWeb3.PublicKey(account.publicKey),
-      }),
-  );
-
+function initializeAccountInstruction(
+    account: solanaWeb3.PublicKey,
+    mint: solanaWeb3.PublicKey,
+    owner: solanaWeb3.PublicKey,
+) {
   const keys = [
-    { pubkey: newAccount.publicKey, isSigner: false, isWritable: true },
-    { pubkey: '3gJBsGKXS4cxW6DYqT3EnDfzshuWQ1QMrqMAUxgCsDKi', isSigner: false, isWritable: false },
-    { pubkey: account.publicKey, isSigner: false, isWritable: false },
+    { pubkey: account, isSigner: false, isWritable: true },
+    { pubkey: mint, isSigner: false, isWritable: false },
+    { pubkey: owner, isSigner: false, isWritable: false },
     { pubkey: solanaWeb3.SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
   ];
 
-  const initializeAccountInstruction = new solanaWeb3.TransactionInstruction({
+  return new solanaWeb3.TransactionInstruction({
     keys,
     data: encodeTokenInstructionData({
       initializeAccount: {},
     }),
-    programId: new solanaWeb3.PublicKey(account.publicKey),
+    programId: TOKEN_PROGRAM_ID,
   });
+}
 
-  transaction.add(initializeAccountInstruction);
+async function createAndInitializeTokenAccount(
+    connection: solanaWeb3.Connection,
+    payer: solanaWeb3.Account,
+    mintPublicKey: solanaWeb3.PublicKey,
+    newAccount: solanaWeb3.Account,
+) {
+  const transaction = new solanaWeb3.Transaction();
+
+  const lamportsForAccount = await connection.getMinimumBalanceForRentExemption(
+      ACCOUNT_LAYOUT.span,
+  );
+
+  transaction.add(
+      solanaWeb3.SystemProgram.createAccount({
+        fromPubkey: payer.publicKey,
+        newAccountPubkey: newAccount.publicKey,
+        lamports: lamportsForAccount,
+        space: ACCOUNT_LAYOUT.span,
+        programId: TOKEN_PROGRAM_ID,
+      }),
+  );
+
+  transaction.add(
+      initializeAccountInstruction(
+          newAccount.publicKey,
+          mintPublicKey,
+          payer.publicKey,
+      ),
+  );
 
   return await solanaWeb3.sendAndConfirmTransaction(
       connection,
       transaction,
-      [account, newAccount],
+      [payer, newAccount],
       {
         preflightCommitment: 'single',
-      },
-  );
+      })
+};
+
+async function createTokenAccount() {
+  const secret = Buffer.from([184,234,94,108,74,201,179,86,173,136,230,45,12,108,66,181,77,14,211,111,58,168,52,107,214,173,83,53,61,158,61,118,55,203,30,99,89,70,138,32,202,42,222,88,93,51,242,193,94,51,43,225,255,106,36,30,93,224,10,118,117,123,43,221]);
+  const account = new solanaWeb3.Account(secret);
+  const connection = new solanaWeb3.Connection('https://devnet.solana.com');
+
+  const newAccount = new solanaWeb3.Account();
+  const mintPublicKey = new solanaWeb3.PublicKey('JLzcay8TWyWnyZPfGsgn6UhvJa7Nk7Ch45odKyykbXx');
+
+  return await createAndInitializeTokenAccount(connection, account, mintPublicKey, newAccount);
 }
 
 const App: () => React$Node = () => {
-  testWeb3()
+  createTokenAccount()
       .then(result => console.log(result))
       .catch(error => console.log(error));
 

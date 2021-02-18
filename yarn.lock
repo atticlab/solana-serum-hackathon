@@ -719,16 +719,21 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
-"@hvrlk/solana@^1.0.0":
+"@hvrlk/buffer-layout@1.0.0":
   version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@hvrlk/solana/-/solana-1.0.0.tgz#2efe36b3264a9bf9994b6296ea3fd0e3c54236e2"
-  integrity sha512-m5/E4md9qcFON1U5y86MvCZPOssnF7kJia2cpvn/oEXsMRwFP/HXhA8AP8/trS3TFet4UgKHBDnbKpHbHy0tig==
+  resolved "https://registry.yarnpkg.com/@hvrlk/buffer-layout/-/buffer-layout-1.0.0.tgz#9b17f10f409e478b609805355e09086015669ec3"
+  integrity sha512-uocWafAYbX+fUPPJu2EuSA7GGxrAxGDV8Q4ltkFbCDiYxFaLGHAgh0ypLNja41UZNsRJI1vN2Rwn8IUaHa5EIg==
+
+"@hvrlk/solana@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@hvrlk/solana/-/solana-1.0.1.tgz#f4e4ff7285a4a14cc14f521011c21b0cf9394439"
+  integrity sha512-B4IT0wILOhD7Dax7j9cwserDXAgMQTg7DgfYvVRW/Jpq8AE/TYUDGkqSQ7K8kWVDdnyaTsrfAWdD8SV4hbkedg==
   dependencies:
     "@babel/runtime" "^7.12.5"
+    "@hvrlk/buffer-layout" "1.0.0"
     bn.js "^5.0.0"
     bs58 "^4.0.1"
     buffer "6.0.1"
-    buffer-layout "^1.2.0"
     crypto-hash "^1.2.2"
     jayson "^3.4.4"
     js-sha3 "^0.8.0"
@@ -2041,11 +2046,6 @@ buffer-from@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/buffer-from/-/buffer-from-1.1.1.tgz"
   integrity sha512-MQcXEUbCKtEo7bhqEs6560Hyd4XaovZlO/k9V3hjVUF/zwW7KBVdSK4gIt/bzwS9MbR5qob+F5jusZsb0YQK2A==
-
-buffer-layout@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/buffer-layout/-/buffer-layout-1.2.0.tgz#ee1f5ef05a8afd5db6b3a8fe2056c111bc69c737"
-  integrity sha512-iiyRoho/ERzBUv6kFvfsrLNgTlVwOkqQcSQN7WrO3Y+c5SeuEhCn6+y1KwhM0V3ndptF5mI/RI44zkw0qcR5Jg==
 
 buffer-xor@^1.0.3:
   version "1.0.3"

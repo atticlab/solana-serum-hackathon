@@ -10,10 +10,10 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@hvrlk/solana": "^1.0.0",
+    "@hvrlk/buffer-layout": "1.0.0",
+    "@hvrlk/solana": "1.0.1",
     "Base64": "^1.1.0",
     "base-64": "^1.0.0",
-    "buffer-layout": "^1.2.0",
     "crypto": "^1.0.1",
     "node-libs-browser": "^2.2.1",
     "node-libs-react-native": "^1.2.1",
