@@ -179,20 +179,22 @@ const App: () => React$Node = () => {
               borderBottomWidth: 0,
             },
             headerTitleStyle: {alignSelf: 'center'},
-            headerRight: () => {
-              return (
-                <TouchableOpacity
-                  style={{paddingRight: 10, position: 'absolute'}}
-                  onPress={() => navigation.navigate('Settings')}>
-                  <SettingIcon />
-                </TouchableOpacity>
-              );
-            },
+            // headerRight: () => {
+            //   return (
+            //     <TouchableOpacity
+            //       style={{paddingRight: 10, position: 'absolute'}}
+            //       onPress={() => navigation.navigate('Settings')}>
+            //       <SettingIcon />
+            //     </TouchableOpacity>
+            //   );
+            // },
           };
         }}>
         <Main.Screen
           name="Home"
-          options={({route}) => ({title: route.title})}
+          options={({route}) => ({
+            title: route.title,
+          })}
           component={MyTabs}
         />
         <Main.Screen

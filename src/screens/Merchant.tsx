@@ -21,9 +21,7 @@ export const DismissKeyboard = ({children}: any) => (
 export default function MerchantScreen({navigation}: any) {
   const [value, onChangeText] = useState('');
   const accountAddress = '0x3AE4fdc923E7637499498c4936BD4958888b5255ad';
-  const copyToClipboard = (address: string) => {
-    Clipboard.setString(address);
-  };
+
   const returnObj = (data: string) => {
     return JSON.stringify({
       name: 'solana',
@@ -38,6 +36,7 @@ export default function MerchantScreen({navigation}: any) {
       if (stackNavigator) {
         stackNavigator.setOptions({
           title: 'Merchant',
+          headerRight: false,
         });
       }
     }, [navigation]),
@@ -48,64 +47,71 @@ export default function MerchantScreen({navigation}: any) {
       <View
         style={{
           flex: 1,
-          alignItems: 'center',
           paddingTop: 20,
           backgroundColor: '#fff',
+          paddingHorizontal: 20,
         }}>
-        <TouchableOpacity onPress={() => copyToClipboard(accountAddress)}>
-          <View style={styles.addressBlock}>
+        <View>
+          <Text style={styles.label}>Address</Text>
+          <View style={styles.infoBlockItem}>
             <Text style={styles.address}>{`${accountAddress.substring(
               0,
               6,
             )}…${accountAddress.substring(accountAddress.length - 4)}`}</Text>
           </View>
-        </TouchableOpacity>
-        <Text style={styles.balance}>0.33423432 ETH</Text>
-        <View>
+        </View>
+        <View style={{marginTop: 20}}>
+          <Text style={styles.label}>Balance</Text>
+          <View style={styles.infoBlockItem}>
+            <Text style={styles.balance}>0.33423432 ETH</Text>
+          </View>
+        </View>
+        <View style={{marginTop: 20}}>
+          <Text style={styles.label}>Amount</Text>
+          <TextInput
+            keyboardType="numeric"
+            style={styles.input}
+            onChangeText={(text) => onChangeText(text)}
+            value={value}
+            placeholder={'Write amount'}
+            placeholderTextColor={'#8C8C8C'}
+          />
+        </View>
+        <View style={{alignItems: 'center', marginTop: 40}}>
           <QRCode size={150} value={returnObj(value)} />
         </View>
-
-        <TextInput
-          keyboardType="numeric"
-          style={styles.input}
-          onChangeText={(text) => onChangeText(text)}
-          value={value}
-          placeholder={'Amount'}
-          placeholderTextColor={'#8C8C8C'}
-        />
       </View>
     </DismissKeyboard>
   );
 }
 
 const styles = StyleSheet.create({
-  addressBlock: {
-    borderBottomLeftRadius: 23,
-    borderBottomRightRadius: 23,
-    borderTopLeftRadius: 23,
-    borderTopRightRadius: 23,
+  infoBlockItem: {
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
     backgroundColor: '#E7E7E7',
+    paddingVertical: 13,
+    paddingHorizontal: 15,
+  },
+  label: {
+    color: '#8C8C8C',
+    marginBottom: 5,
   },
   address: {
-    paddingVertical: 13,
-    paddingHorizontal: 25,
     fontWeight: '500',
     fontSize: 19,
   },
   balance: {
-    marginTop: 25,
-    fontWeight: '700',
-    fontSize: 23,
-    marginBottom: 30,
+    fontWeight: '500',
+    fontSize: 19,
   },
   input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    width: 200,
+    fontSize: 19,
+    paddingVertical: 13,
     backgroundColor: '#EBEBEB',
     borderRadius: 10,
-    marginTop: 45,
-    paddingLeft: 10,
+    paddingLeft: 15,
   },
 });

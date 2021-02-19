@@ -1,5 +1,5 @@
 import React, {useCallback} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 
 export default function SavingsScreen({navigation}: any) {
@@ -9,6 +9,7 @@ export default function SavingsScreen({navigation}: any) {
       if (stackNavigator) {
         stackNavigator.setOptions({
           title: 'Savings',
+          headerRight: false,
         });
       }
     }, [navigation]),
@@ -17,51 +18,53 @@ export default function SavingsScreen({navigation}: any) {
     <View
       style={{
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
         backgroundColor: '#fff',
+        paddingHorizontal: 20,
+        justifyContent: 'space-between',
+        paddingBottom: 100,
       }}>
-      <View style={styles.blockSavings}>
-        <View style={styles.blockInfoItem}>
-          <Text style={styles.title}>Total saved</Text>
-          <Text style={styles.value}>0.333 ETH</Text>
-        </View>
-        <View style={styles.blockInfoItem}>
-          <Text style={styles.title}>Total interest</Text>
-          <Text style={styles.value}>0.333 ETH</Text>
+      <View style={{paddingTop: 50}}>
+        <View>
+          <Text style={styles.label}>Balance</Text>
+          <Text style={{fontSize: 65, fontWeight: '900'}}>10000</Text>
         </View>
         <View>
-          <Text style={styles.title}>APY</Text>
-          <Text style={styles.value}>0.23 %</Text>
+          <Text style={styles.info}>Interest : 100</Text>
+          <Text style={styles.info}>APY : 20%</Text>
         </View>
       </View>
+      <TouchableOpacity style={styles.button}>
+        <Text style={styles.textBtn}>Withdraw</Text>
+      </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  blockSavings: {
-    backgroundColor: '#FAFAFA',
-    borderWidth: 1,
-    borderColor: '#E2E2E2',
-    borderRadius: 17,
-    paddingVertical: 20,
-    paddingHorizontal: 35,
-    minWidth: 250,
-  },
-  blockInfoItem: {
-    paddingBottom: 15,
-  },
-  title: {
-    fontWeight: '700',
-    fontSize: 22,
-    color: '#000000',
-  },
-  value: {
-    marginTop: 10,
+  label: {
+    color: '#4F4B4B',
+    marginBottom: 5,
+    fontSize: 25,
     fontWeight: '500',
-    fontSize: 22,
-    color: '#8C8C8C',
+  },
+  info: {
+    textAlign: 'right',
+    color: '#4F4B4B',
+    marginBottom: 5,
+    fontSize: 15,
+  },
+  button: {
+    paddingVertical: 10,
+    paddingHorizontal: 50,
+    fontWeight: '700',
+    fontSize: 23,
+    color: '#565656',
+    backgroundColor: '#EBEBEB',
+    borderRadius: 40,
+    marginTop: 40,
+  },
+  textBtn: {
     textAlign: 'center',
+    fontWeight: '700',
   },
 });

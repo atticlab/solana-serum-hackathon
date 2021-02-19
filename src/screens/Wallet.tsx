@@ -9,6 +9,8 @@ import {
 import {useFocusEffect} from '@react-navigation/native';
 import {DismissKeyboard} from './Merchant';
 
+import ScanIcon from '../assets/images/qr.svg';
+// @ts-ignore
 import * as solanaWeb3 from '@pragma-technologies/react-native-solana';
 import {transferTokens} from '../crypto/transfer';
 
@@ -122,6 +124,15 @@ export default function WalletScreen({navigation, route}: any) {
       if (stackNavigator) {
         stackNavigator.setOptions({
           title: 'Wallet',
+          headerRight: () => {
+            return (
+              <TouchableOpacity
+                style={{paddingRight: 10, position: 'absolute'}}
+                onPress={() => navigation.navigate('Scanner')}>
+                <ScanIcon />
+              </TouchableOpacity>
+            );
+          },
         });
       }
     }, [navigation]),
@@ -131,42 +142,40 @@ export default function WalletScreen({navigation, route}: any) {
       <View
         style={{
           flex: 1,
-          justifyContent: 'space-between',
-          alignItems: 'center',
           paddingBottom: 100,
           backgroundColor: '#fff',
+          paddingHorizontal: 20,
         }}>
         <View style={{marginTop: 20}}>
-          <Text style={styles.title}>Send transaction</Text>
-          <View style={styles.blockInput}>
-            <Text style={styles.label}>Address</Text>
-            <TextInput
-              style={styles.input}
-              onChangeText={(text) => setDataQR({address: text})}
-              value={dataQR?.address}
-              placeholder={'Address'}
-              placeholderTextColor={'#8C8C8C'}
-            />
-          </View>
-          <View style={styles.blockInput}>
-            <Text style={styles.label}>Amount</Text>
-            <TextInput
-              style={styles.input}
-              onChangeText={(text) => setDataQR({amount: text})}
-              value={dataQR?.amount || ''}
-              placeholder={'Amount'}
-              placeholderTextColor={'#8C8C8C'}
-            />
-          </View>
-          <Text style={{textAlign: 'center', marginVertical: 15}}>or</Text>
+          <Text style={styles.label}>Address</Text>
+          <TextInput
+            keyboardType="numeric"
+            style={styles.input}
+            onChangeText={(text) => setDataQR({...dataQR, address: text})}
+            value={dataQR?.address}
+            placeholder={'Address'}
+            placeholderTextColor={'#8C8C8C'}
+          />
+        </View>
+        <View style={{marginTop: 20}}>
+          <Text style={styles.label}>Amount</Text>
+          <TextInput
+            keyboardType="numeric"
+            style={styles.input}
+            onChangeText={(text) => setDataQR({...dataQR, amount: text})}
+            value={dataQR?.amount || ''}
+            placeholder={'Amount'}
+            placeholderTextColor={'#8C8C8C'}
+          />
+        </View>
+        {/* <Text style={{textAlign: 'center', marginVertical: 15}}>or</Text>
           <TouchableOpacity
             style={styles.button}
             onPress={() => navigation?.navigate('Scanner')}>
             <Text style={{textAlign: 'center'}}>Scan invoice</Text>
-          </TouchableOpacity>
-        </View>
+          </TouchableOpacity> */}
         <TouchableOpacity style={styles.button} onPress={send}>
-          <Text>Send</Text>
+          <Text style={styles.textBtn}>Send</Text>
         </TouchableOpacity>
       </View>
     </DismissKeyboard>
@@ -174,13 +183,9 @@ export default function WalletScreen({navigation, route}: any) {
 }
 
 const styles = StyleSheet.create({
-  blockInput: {
-    marginTop: 40,
-  },
   label: {
-    fontSize: 14,
-    marginBottom: 4,
-    borderColor: 'gray',
+    color: '#8C8C8C',
+    marginBottom: 5,
   },
   title: {
     textAlign: 'center',
@@ -190,21 +195,22 @@ const styles = StyleSheet.create({
   button: {
     paddingVertical: 10,
     paddingHorizontal: 50,
-    fontWeight: '500',
+    fontWeight: '700',
     fontSize: 23,
     color: '#565656',
-    backgroundColor: '#F7F7F7',
+    backgroundColor: '#EBEBEB',
     borderRadius: 40,
-    borderWidth: 1,
-    borderColor: '#000000',
+    marginTop: 40,
   },
   input: {
-    borderColor: 'gray',
-    borderWidth: 1,
-    width: 300,
+    fontSize: 19,
+    paddingVertical: 13,
     backgroundColor: '#EBEBEB',
     borderRadius: 10,
-    paddingLeft: 10,
-    paddingVertical: 15,
+    paddingLeft: 15,
+  },
+  textBtn: {
+    textAlign: 'center',
+    fontWeight: '700',
   },
 });

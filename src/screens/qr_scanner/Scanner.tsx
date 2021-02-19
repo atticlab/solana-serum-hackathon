@@ -4,6 +4,7 @@ import {RNCamera, RNCameraProps} from 'react-native-camera';
 import {DEVICE_HEIGHT, DEVICE_WIDTH} from '../../utils/Constants';
 import BackArrow from '../../assets/images/back-arrow.svg';
 import {styles} from './ScannerStyles';
+import {object} from 'superstruct';
 
 const PendingView = () => (
   <View
@@ -87,10 +88,13 @@ class Scanner extends Component<ScannerOwnProps> {
   };
 
   onBarCodeRead = (event: any) => {
-    console.log(event.data);
-    const data = JSON.parse(event.data);
-    if (data.address && data.amount) {
-      this.props.navigation.navigate('Wallet', {data});
+    if (typeof event.data === 'object') {
+      const data = JSON.parse(event.data);
+      if (data.address && data.amount) {
+        this.props.navigation.navigate('Wallet', {data});
+      } else {
+        this.setState({error: 'Error'});
+      }
     } else {
       this.setState({error: 'Error'});
     }
