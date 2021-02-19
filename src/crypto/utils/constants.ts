@@ -5,6 +5,9 @@ export const connection = new solanaWeb3.Connection('https://devnet.solana.com')
 
 export const TOKEN_PROGRAM_ID = new solanaWeb3.PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
 
+//TODO: use real pk
+export const CONTRACT_PROGRAM_ID = new solanaWeb3.PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
+
 export const ACCOUNT_LAYOUT = BufferLayout.struct([
     BufferLayout.blob(32, 'mint'),
     BufferLayout.blob(32, 'owner'),
