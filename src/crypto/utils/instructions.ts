@@ -74,25 +74,6 @@ export function depositInstruction(
     poolMint: solanaWeb3.PublicKey,
     amount: number,
 ) {
-    console.log(savingsPool.toString())
-    console.log(savingsPoolAuthority.toString())
-    console.log(sourceTokenAccount.toString())
-    console.log(destinationTokenAccount.toString())
-    console.log(savingsMint.toString())
-    console.log(depositPublicKey.toString())
-    console.log(poolMint.toString())
-    console.log(TOKEN_PROGRAM_ID.toString())
-
-    ///0. `[w]` Savings Pool
-    ///   1. `[]` Savings Pool authority
-    ///   2. `[w]` Token account to deposit tokens from
-    ///   3. `[w]` Savings token account to deposit to
-    ///   4. `[]` Savings token mint
-    ///   5. `[w]` User token account to receive Pool token
-    ///   6. `[w]` Pool token mint account
-    ///   7. `[]` Token program id
-
-
     const keys = [
         { pubkey: savingsPool, isSigner: false, isWritable: true },
         { pubkey: savingsPoolAuthority, isSigner: false, isWritable: false },
