@@ -1,5 +1,5 @@
 import * as solanaWeb3 from '@pragma-technologies/react-native-solana';
-import {transfer} from "./utils/instructions";
+import {transferInstruction} from "./utils/instructions";
 import {connection, TOKEN_PROGRAM_ID} from "./utils/constants";
 
 export async function transferTokens(
@@ -15,7 +15,7 @@ export async function transferTokens(
     }
 
     const transaction = new solanaWeb3.Transaction().add(
-        transfer(
+        transferInstruction(
             sourcePublicKey,
             destPublicKey,
             ownerAccount.publicKey,
