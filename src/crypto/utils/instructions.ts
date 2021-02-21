@@ -1,5 +1,5 @@
 import * as solanaWeb3 from '@pragma-technologies/react-native-solana';
-import {CONTRACT_PROGRAM_ID, encodeTokenInstructionData, TOKEN_PROGRAM_ID} from "./constants";
+import {CONTRACT_PROGRAM_ID, encodeContractInstructionData, encodeTokenInstructionData, TOKEN_PROGRAM_ID} from "./constants";
 
 export function initializeAccountInstruction(
     account: solanaWeb3.PublicKey,
@@ -70,24 +70,43 @@ export function depositInstruction(
     sourceTokenAccount: solanaWeb3.PublicKey,
     destinationTokenAccount: solanaWeb3.PublicKey,
     savingsMint: solanaWeb3.PublicKey,
-    poolTokenAccount: solanaWeb3.PublicKey,
+    depositPublicKey: solanaWeb3.PublicKey,
     poolMint: solanaWeb3.PublicKey,
     amount: number,
 ) {
+    console.log(savingsPool.toString())
+    console.log(savingsPoolAuthority.toString())
+    console.log(sourceTokenAccount.toString())
+    console.log(destinationTokenAccount.toString())
+    console.log(savingsMint.toString())
+    console.log(depositPublicKey.toString())
+    console.log(poolMint.toString())
+    console.log(TOKEN_PROGRAM_ID.toString())
+
+    ///0. `[w]` Savings Pool
+    ///   1. `[]` Savings Pool authority
+    ///   2. `[w]` Token account to deposit tokens from
+    ///   3. `[w]` Savings token account to deposit to
+    ///   4. `[]` Savings token mint
+    ///   5. `[w]` User token account to receive Pool token
+    ///   6. `[w]` Pool token mint account
+    ///   7. `[]` Token program id
+
+
     const keys = [
         { pubkey: savingsPool, isSigner: false, isWritable: true },
         { pubkey: savingsPoolAuthority, isSigner: false, isWritable: false },
         { pubkey: sourceTokenAccount, isSigner: false, isWritable: true },
         { pubkey: destinationTokenAccount, isSigner: false, isWritable: true },
         { pubkey: savingsMint, isSigner: false, isWritable: false },
-        { pubkey: poolTokenAccount, isSigner: false, isWritable: true },
+        { pubkey: depositPublicKey, isSigner: false, isWritable: true },
         { pubkey: poolMint, isSigner: false, isWritable: true },
         { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false }
     ];
 
     return new solanaWeb3.TransactionInstruction({
         keys,
-        data: encodeTokenInstructionData({
+        data: encodeContractInstructionData({
             deposit: { amount },
         }),
         programId: CONTRACT_PROGRAM_ID,
@@ -117,7 +136,7 @@ export function withdrawInstruction(
 
     return new solanaWeb3.TransactionInstruction({
         keys,
-        data: encodeTokenInstructionData({
+        data: encodeContractInstructionData({
             withdraw: { amount },
         }),
         programId: CONTRACT_PROGRAM_ID,

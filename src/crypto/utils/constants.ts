@@ -4,9 +4,10 @@ import * as solanaWeb3 from '@pragma-technologies/react-native-solana';
 export const connection = new solanaWeb3.Connection('https://devnet.solana.com');
 
 export const TOKEN_PROGRAM_ID = new solanaWeb3.PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
+export const CONTRACT_PROGRAM_ID = new solanaWeb3.PublicKey('CR8CRris6RDN8RHw4ANgt7rPTs771kGSu4vNgk76WGJ2');
 
-//TODO: use real pk
-export const CONTRACT_PROGRAM_ID = new solanaWeb3.PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
+export const SAVINGS_MINT = new solanaWeb3.PublicKey('JLzcay8TWyWnyZPfGsgn6UhvJa7Nk7Ch45odKyykbXx');
+export const POOL_ACCOUNT = new solanaWeb3.PublicKey('B8em5p29s9mpGVgpgtNCvFkofbzv7RRGK7MCCSfqmCsw');
 
 export const ACCOUNT_LAYOUT = BufferLayout.struct([
     BufferLayout.blob(32, 'mint'),
@@ -15,6 +16,15 @@ export const ACCOUNT_LAYOUT = BufferLayout.struct([
     BufferLayout.blob(93),
 ]);
 
+export const POOL_LAYOUT = BufferLayout.struct([
+    BufferLayout.u8('version'),
+    BufferLayout.u8('bump_seed'),
+    BufferLayout.blob(32, 'token_program_id'),
+    BufferLayout.blob(32, 'savings_account'),
+    BufferLayout.blob(32, 'savings_mint'),
+    BufferLayout.blob(32, 'pool_mint'),
+    BufferLayout.blob(32, 'owner'),
+]);
 
 const LAYOUT = BufferLayout.union(BufferLayout.u8('instruction'));
 LAYOUT.addVariant(
@@ -29,6 +39,7 @@ LAYOUT.addVariant(
 );
 LAYOUT.addVariant(1, BufferLayout.struct([]), 'initializeAccount');
 LAYOUT.addVariant(3, BufferLayout.struct([BufferLayout.nu64('amount')]), 'transfer');
+LAYOUT.addVariant(4, BufferLayout.struct([BufferLayout.nu64('amount')]), 'approve');
 LAYOUT.addVariant(7, BufferLayout.struct([BufferLayout.nu64('amount')]), 'mintTo');
 LAYOUT.addVariant(8, BufferLayout.struct([BufferLayout.nu64('amount')]), 'burn');
 LAYOUT.addVariant(9, BufferLayout.struct([]), 'closeAccount');
@@ -38,5 +49,17 @@ export const instructionMaxSpan = Math.max(...Object.values(LAYOUT.registry).map
 export function encodeTokenInstructionData(instruction) {
     const b = Buffer.alloc(instructionMaxSpan);
     const span = LAYOUT.encode(instruction, b);
+    return b.slice(0, span);
+}
+
+const CONTRACT_LAYOUT = BufferLayout.union(BufferLayout.u8('instruction'));
+CONTRACT_LAYOUT.addVariant(1, BufferLayout.struct([BufferLayout.nu64('amount')]), 'deposit');
+CONTRACT_LAYOUT.addVariant(2, BufferLayout.struct([BufferLayout.nu64('amount')]), 'withdraw');
+
+export const contractInstructionMaxSpan = Math.max(...Object.values(LAYOUT.registry).map((r) => r.span));
+
+export function encodeContractInstructionData(instruction) {
+    const b = Buffer.alloc(contractInstructionMaxSpan);
+    const span = CONTRACT_LAYOUT.encode(instruction, b);
     return b.slice(0, span);
 }

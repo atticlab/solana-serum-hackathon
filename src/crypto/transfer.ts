@@ -1,12 +1,17 @@
 import * as solanaWeb3 from '@pragma-technologies/react-native-solana';
-import {transferInstruction} from "./utils/instructions";
-import {connection, TOKEN_PROGRAM_ID} from "./utils/constants";
+import {transferInstruction, approveInstruction, depositInstruction} from "./utils/instructions";
+import {connection, POOL_ACCOUNT, SAVINGS_MINT, TOKEN_PROGRAM_ID} from "./utils/constants";
 
 export async function transferTokens(
     ownerAccount: solanaWeb3.Account,
     sourcePublicKey: solanaWeb3.PublicKey,
     destPublicKey: solanaWeb3.PublicKey,
+    authorityKey: solanaWeb3.PublicKey,
+    savingsPublicKey: solanaWeb3.PublicKey,
+    depositPublicKey: solanaWeb3.PublicKey,
+    poolMint: solanaWeb3.PublicKey,
     amount: number,
+    amountToDeposit: number,
 ) {
     const destAccountInfo = await connection.getAccountInfo(destPublicKey);
 
@@ -14,7 +19,9 @@ export async function transferTokens(
         throw new Error('Not a token account');
     }
 
-    const transaction = new solanaWeb3.Transaction().add(
+    const transaction = new solanaWeb3.Transaction()
+
+    transaction.add(
         transferInstruction(
             sourcePublicKey,
             destPublicKey,
@@ -22,6 +29,28 @@ export async function transferTokens(
             amount,
         ),
     );
+
+    transaction.add(
+        approveInstruction(
+            sourcePublicKey,
+            authorityKey,
+            ownerAccount.publicKey,
+            amountToDeposit
+        )
+    )
+
+    transaction.add(
+        depositInstruction(
+            POOL_ACCOUNT,
+            authorityKey,
+            sourcePublicKey,
+            savingsPublicKey,
+            SAVINGS_MINT,
+            depositPublicKey,
+            poolMint,
+            amountToDeposit
+        )
+    )
 
     return await solanaWeb3.sendAndConfirmTransaction(
         connection,
