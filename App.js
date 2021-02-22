@@ -46,33 +46,26 @@ const Main = createStackNavigator();
 
 const App: () => React$Node = () => {
   useEffect(() => {
-    testCreateTokenAccount().then((tokenAccount) => {
-      console.log(tokenAccount, 'tokenAccount');
-      console.log(getData('tokenAccount') === null);
-      if (getData('tokenAccount') === null) {
+    testCreateTokenAccount().then(async (tokenAccount) => {
+      if ((await getData('tokenAccount')) === null) {
         storeData('tokenAccount', tokenAccount.toString());
       }
     });
-    testCreatePoolTokenAccount().then((poolTokenAccount) => {
-      console.log(poolTokenAccount, 'poolTokenAccountr');
+    testCreatePoolTokenAccount().then(async (poolTokenAccount) => {
       console.log(
-        getData('poolTokenAccounts') === null,
-        'getData(poolTokenAccounts) === null',
+        (await getData('poolTokenAccount')) === null,
+        '5555555555555555555',
       );
-      console.log(
-        getData('poolTokenAccount') === null,
-        'poolTokenAccountpoolTokenAccountpoolTokenAccountpoolTokenAccountNULLLLLLLL',
-      );
-      if (getData('poolTokenAccount') === null) {
+      if ((await getData('poolTokenAccount')) === null) {
         storeData('poolTokenAccount', poolTokenAccount.toString());
       }
     });
 
-    getPullData().then((res) => {
+    getPullData().then(async (res) => {
       if (
-        getData('nonce') === null &&
-        getData('poolMint') === null &&
-        getData('savings') === null
+        (await getData('nonce')) === null &&
+        (await getData('poolMint')) === null &&
+        (await getData('savings')) === null
       ) {
         storeData('nonce', res.nonce);
         storeData('poolMint', res.poolMint.toString());
