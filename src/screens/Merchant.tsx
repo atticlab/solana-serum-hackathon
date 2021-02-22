@@ -49,26 +49,24 @@ export default function MerchantScreen({navigation, route}: any) {
 
   const balance = async () => {
     const sourcePublicKeyStorage = await getData('tokenAccount');
-    setAccountAddress(sourcePublicKeyStorage);
-    console.log(sourcePublicKeyStorage, 'sourcePublicKeyStorage');
-    const pk = new solanaWeb3.PublicKey(sourcePublicKeyStorage);
-    const balance = await getBalance(pk);
-    setBalance(balance / Math.pow(10, 9));
-    console.log(balance);
+    if (sourcePublicKeyStorage) {
+      setAccountAddress(sourcePublicKeyStorage);
+      console.log(sourcePublicKeyStorage, 'sourcePublicKeyStorage');
+      const pk = new solanaWeb3.PublicKey(sourcePublicKeyStorage);
+      const balance = await getBalance(pk);
+      setBalance(balance / Math.pow(10, 9));
+      console.log(balance);
+    }
   };
 
   useEffect(() => {
-    if (getData('tokenAccount')) {
-      balance();
-    }
+    balance();
   }, [navigation, route]);
   useEffect(() => {
-    if (getData('tokenAccount')) {
-      const interval = setInterval(() => {
-        balance();
-      }, 20000);
-      return () => clearInterval(interval);
-    }
+    const interval = setInterval(() => {
+      balance();
+    }, 20000);
+    return () => clearInterval(interval);
   }, []);
   return (
     <DismissKeyboard>
