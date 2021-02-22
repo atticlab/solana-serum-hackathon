@@ -1,8 +1,15 @@
-import React, {useCallback} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
+import * as solanaWeb3 from '@pragma-technologies/react-native-solana';
+import {SECRET} from '../utils/Constants';
+import {createAuthority, getPullData} from '../crypto/pool';
+import {withdrawTokens} from '../crypto/withdraw';
+import {getData} from '../services/storageService';
+import {getBalance} from '../crypto/balance';
+import {Loader} from '../components/loader';
 
-export default function SavingsScreen({navigation}: any) {
+export default function SavingsScreen({navigation, route}: any) {
   useFocusEffect(
     useCallback(() => {
       const stackNavigator = navigation.dangerouslyGetParent();
@@ -14,29 +21,97 @@ export default function SavingsScreen({navigation}: any) {
       }
     }, [navigation]),
   );
+
+  const testWithdraw = async () => {
+    const account = new solanaWeb3.Account(SECRET);
+    // 1
+    const sourcePublicKeyStorage = await getData('tokenAccount');
+    const sourcePublicKey = new solanaWeb3.PublicKey(
+      // 'HxkvUmLEzHnddbMqJmU6xYf8UqBrpVbJqgKzYEv7g28r',
+      sourcePublicKeyStorage,
+    );
+    // 2
+    const depositTokenPublicKeyStorage = await getData('poolTokenAccount');
+    const depositTokenPublicKey = new solanaWeb3.PublicKey(
+      // '2rFuPBhMT8jaEZJA3E2dxwQDU9LRXEY771bhhjZcTAef',
+      depositTokenPublicKeyStorage,
+    );
+
+    // const poolData = await getPullData();
+    const nonceStorage = await getData('nonce');
+    const poolMintStorage = await getData('poolMint');
+    const savingsStorage = await getData('savings');
+
+    const authority = await createAuthority(nonceStorage);
+
+    return await withdrawTokens(
+      account,
+      depositTokenPublicKey,
+      authority,
+      savingsStorage,
+      sourcePublicKey,
+      poolMintStorage,
+      balanceCount,
+    );
+  };
+  const [loading, setLoading] = useState(false);
+  const withdraw = async () => {
+    setLoading(true);
+    await testWithdraw()
+      .then(async (res) => {
+        console.log(res, 'result withdraw');
+        Alert.alert('Success');
+      })
+      .catch((error) => {
+        console.log(error);
+        Alert.alert('Error');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const [balanceCount, setBalance] = useState<number>();
+
+  const balance = async () => {
+    const depositTokenPublicKeyStorage = await getData('poolTokenAccount');
+    const pk = new solanaWeb3.PublicKey(depositTokenPublicKeyStorage);
+    const balance = await getBalance(pk);
+    setBalance(balance);
+    console.log(balance);
+  };
+
+  useEffect(() => {
+    balance();
+  }, [route]);
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: '#fff',
-        paddingHorizontal: 20,
-        justifyContent: 'space-between',
-        paddingBottom: 100,
-      }}>
-      <View style={{paddingTop: 50}}>
-        <View>
-          <Text style={styles.label}>Balance</Text>
-          <Text style={{fontSize: 65, fontWeight: '900'}}>10000</Text>
+    <>
+      {loading && <Loader />}
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: '#fff',
+          paddingHorizontal: 20,
+          justifyContent: 'space-between',
+          paddingBottom: 100,
+        }}>
+        <View style={{paddingTop: 50}}>
+          <View>
+            <Text style={styles.label}>Balance</Text>
+            <Text style={{fontSize: 65, fontWeight: '900'}}>
+              {balanceCount}
+            </Text>
+          </View>
+          <View>
+            <Text style={styles.info}>Interest : 0</Text>
+            <Text style={styles.info}>APY : 25%</Text>
+          </View>
         </View>
-        <View>
-          <Text style={styles.info}>Interest : 100</Text>
-          <Text style={styles.info}>APY : 20%</Text>
-        </View>
+        <TouchableOpacity style={styles.button} onPress={withdraw}>
+          <Text style={styles.textBtn}>Withdraw</Text>
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.textBtn}>Withdraw</Text>
-      </TouchableOpacity>
-    </View>
+    </>
   );
 }
 

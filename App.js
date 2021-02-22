@@ -1,5 +1,6 @@
 import './global';
-import React from 'react';
+
+import React, {useEffect} from 'react';
 import 'react-native-get-random-values';
 import {
   SafeAreaView,
@@ -10,6 +11,7 @@ import {
   StatusBar,
   TouchableOpacity,
 } from 'react-native';
+
 import {Header, Colors} from 'react-native/Libraries/NewAppScreen';
 import * as solanaWeb3 from '@pragma-technologies/react-native-solana';
 import {createAndInitializeTokenAccount} from './src/crypto/account';
@@ -29,97 +31,41 @@ import MerchantIcon from './src/assets/images/merchant.svg';
 import WalletIcon from './src/assets/images/wallet.svg';
 import SavingIcon from './src/assets/images/savings.svg';
 import SettingIcon from './src/assets/images/setting.svg';
-
-async function testCreateAndInitializeTokenAccount() {
-  // const secret = Buffer.from([184,234,94,108,74,201,179,86,173,136,230,45,12,108,66,181,77,14,211,111,58,168,52,107,214,173,83,53,61,158,61,118,55,203,30,99,89,70,138,32,202,42,222,88,93,51,242,193,94,51,43,225,255,106,36,30,93,224,10,118,117,123,43,221]);
-  const secret = Buffer.from([
-    12,
-    66,
-    39,
-    208,
-    30,
-    134,
-    222,
-    70,
-    133,
-    220,
-    111,
-    204,
-    182,
-    176,
-    174,
-    17,
-    190,
-    133,
-    165,
-    65,
-    141,
-    36,
-    137,
-    200,
-    11,
-    206,
-    151,
-    23,
-    139,
-    193,
-    234,
-    25,
-    87,
-    55,
-    192,
-    214,
-    33,
-    175,
-    182,
-    93,
-    13,
-    99,
-    116,
-    111,
-    154,
-    183,
-    74,
-    60,
-    67,
-    204,
-    120,
-    217,
-    99,
-    168,
-    209,
-    155,
-    198,
-    63,
-    102,
-    54,
-    195,
-    211,
-    31,
-    14,
-  ]);
-
-  const account = new solanaWeb3.Account(secret);
-
-  const newAccount = new solanaWeb3.Account();
-  const mintPublicKey = new solanaWeb3.PublicKey(
-    'JLzcay8TWyWnyZPfGsgn6UhvJa7Nk7Ch45odKyykbXx',
-  );
-
-  return await createAndInitializeTokenAccount(
-    account,
-    mintPublicKey,
-    newAccount,
-  );
-}
+import {getPullData} from './src/crypto/pool';
+import {
+  testCreatePoolTokenAccount,
+  testCreateTokenAccount,
+  testTransferTokens,
+} from './src/examples';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {getData, storeData} from './src/services/storageService';
+import {getBalance} from './src/crypto/balance';
 
 const Tab = createBottomTabNavigator();
 const Main = createStackNavigator();
 
 const App: () => React$Node = () => {
-  // testTransferTokens()
-  //     .then(result => console.log(result))
-  //     .catch(error => console.log(error));
+  useEffect(() => {
+    testCreateTokenAccount().then((tokenAccount) => {
+      console.log(tokenAccount, 'tokenAccount');
+
+      if (!getData('tokenAccount')) {
+        storeData('tokenAccount', tokenAccount.toString());
+      }
+    });
+    testCreatePoolTokenAccount().then((poolTokenAccount) => {
+      console.log(poolTokenAccount, 'poolTokenAccountr');
+      if (!getData('poolTokenAccount')) {
+        storeData('poolTokenAccount', poolTokenAccount.toString());
+      }
+    });
+
+    getPullData().then((res) => {
+      storeData('nonce', res.nonce);
+      storeData('poolMint', res.poolMint.toString());
+      storeData('savings', res.savings.toString());
+    });
+  }, []);
   function MyTabs() {
     return (
       <Tab.Navigator
@@ -213,6 +159,7 @@ const App: () => React$Node = () => {
       </Main.Navigator>
     );
   }
+
   return (
     <>
       <NavigationContainer>

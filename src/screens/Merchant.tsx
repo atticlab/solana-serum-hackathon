@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,9 @@ import {
 } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import {useFocusEffect} from '@react-navigation/native';
+import {getData} from '../services/storageService';
+import * as solanaWeb3 from '@pragma-technologies/react-native-solana';
+import {getBalance} from '../crypto/balance';
 
 export const DismissKeyboard = ({children}: any) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -18,9 +21,9 @@ export const DismissKeyboard = ({children}: any) => (
   </TouchableWithoutFeedback>
 );
 
-export default function MerchantScreen({navigation}: any) {
+export default function MerchantScreen({navigation, route}: any) {
   const [value, onChangeText] = useState('');
-  const accountAddress = '0x3AE4fdc923E7637499498c4936BD4958888b5255ad';
+  const [accountAddress, setAccountAddress] = useState('');
 
   const returnObj = (data: string) => {
     return JSON.stringify({
@@ -42,6 +45,27 @@ export default function MerchantScreen({navigation}: any) {
     }, [navigation]),
   );
 
+  const [balanceCount, setBalance] = useState<number>();
+
+  const balance = async () => {
+    const sourcePublicKeyStorage = await getData('tokenAccount');
+    setAccountAddress(sourcePublicKeyStorage);
+    console.log(sourcePublicKeyStorage, 'sourcePublicKeyStorage');
+    const pk = new solanaWeb3.PublicKey(sourcePublicKeyStorage);
+    const balance = await getBalance(pk);
+    setBalance(balance / Math.pow(10, 9));
+    console.log(balance);
+  };
+
+  useEffect(() => {
+    balance();
+  }, [navigation, route]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      balance();
+    }, 20000);
+    return () => clearInterval(interval);
+  }, []);
   return (
     <DismissKeyboard>
       <View
@@ -63,7 +87,7 @@ export default function MerchantScreen({navigation}: any) {
         <View style={{marginTop: 20}}>
           <Text style={styles.label}>Balance</Text>
           <View style={styles.infoBlockItem}>
-            <Text style={styles.balance}>0.33423432 ETH</Text>
+            <Text style={styles.balance}>{balanceCount}</Text>
           </View>
         </View>
         <View style={{marginTop: 20}}>
