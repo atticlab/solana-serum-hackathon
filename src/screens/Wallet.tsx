@@ -125,7 +125,6 @@ export default function WalletScreen({navigation, route}: any) {
           <View style={{marginTop: 20}}>
             <Text style={styles.label}>Address</Text>
             <TextInput
-              keyboardType="numeric"
               style={styles.input}
               onChangeText={(text) => setDataQR({...dataQR, address: text})}
               value={dataQR?.address}
