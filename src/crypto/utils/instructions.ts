@@ -1,5 +1,5 @@
 import * as solanaWeb3 from '@pragma-technologies/react-native-solana';
-import {CONTRACT_PROGRAM_ID, encodeTokenInstructionData, TOKEN_PROGRAM_ID} from "./constants";
+import {CONTRACT_PROGRAM_ID, encodeContractInstructionData, encodeTokenInstructionData, TOKEN_PROGRAM_ID} from "./constants";
 
 export function initializeAccountInstruction(
     account: solanaWeb3.PublicKey,
@@ -70,7 +70,7 @@ export function depositInstruction(
     sourceTokenAccount: solanaWeb3.PublicKey,
     destinationTokenAccount: solanaWeb3.PublicKey,
     savingsMint: solanaWeb3.PublicKey,
-    poolTokenAccount: solanaWeb3.PublicKey,
+    depositPublicKey: solanaWeb3.PublicKey,
     poolMint: solanaWeb3.PublicKey,
     amount: number,
 ) {
@@ -80,14 +80,14 @@ export function depositInstruction(
         { pubkey: sourceTokenAccount, isSigner: false, isWritable: true },
         { pubkey: destinationTokenAccount, isSigner: false, isWritable: true },
         { pubkey: savingsMint, isSigner: false, isWritable: false },
-        { pubkey: poolTokenAccount, isSigner: false, isWritable: true },
+        { pubkey: depositPublicKey, isSigner: false, isWritable: true },
         { pubkey: poolMint, isSigner: false, isWritable: true },
         { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false }
     ];
 
     return new solanaWeb3.TransactionInstruction({
         keys,
-        data: encodeTokenInstructionData({
+        data: encodeContractInstructionData({
             deposit: { amount },
         }),
         programId: CONTRACT_PROGRAM_ID,
@@ -117,7 +117,7 @@ export function withdrawInstruction(
 
     return new solanaWeb3.TransactionInstruction({
         keys,
-        data: encodeTokenInstructionData({
+        data: encodeContractInstructionData({
             withdraw: { amount },
         }),
         programId: CONTRACT_PROGRAM_ID,
