@@ -49,21 +49,27 @@ const App: () => React$Node = () => {
     testCreateTokenAccount().then((tokenAccount) => {
       console.log(tokenAccount, 'tokenAccount');
 
-      if (!getData('tokenAccount')) {
+      if (getData('tokenAccount') === null) {
         storeData('tokenAccount', tokenAccount.toString());
       }
     });
     testCreatePoolTokenAccount().then((poolTokenAccount) => {
       console.log(poolTokenAccount, 'poolTokenAccountr');
-      if (!getData('poolTokenAccount')) {
+      if (getData('poolTokenAccount') === null) {
         storeData('poolTokenAccount', poolTokenAccount.toString());
       }
     });
 
     getPullData().then((res) => {
-      storeData('nonce', res.nonce);
-      storeData('poolMint', res.poolMint.toString());
-      storeData('savings', res.savings.toString());
+      if (
+        getData('nonce') === null &&
+        getData('poolMint') === null &&
+        getData('savings') === null
+      ) {
+        storeData('nonce', res.nonce);
+        storeData('poolMint', res.poolMint.toString());
+        storeData('savings', res.savings.toString());
+      }
     });
   }, []);
   function MyTabs() {
