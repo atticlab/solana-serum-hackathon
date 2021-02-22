@@ -58,12 +58,12 @@ export default function MerchantScreen({navigation, route}: any) {
   };
 
   useEffect(() => {
-    if (!getData('tokenAccount')) {
+    if (getData('tokenAccount')) {
       balance();
     }
   }, [navigation, route]);
   useEffect(() => {
-    if (!getData('tokenAccount')) {
+    if (getData('tokenAccount')) {
       const interval = setInterval(() => {
         balance();
       }, 20000);
