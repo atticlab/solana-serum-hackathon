@@ -48,13 +48,21 @@ const App: () => React$Node = () => {
   useEffect(() => {
     testCreateTokenAccount().then((tokenAccount) => {
       console.log(tokenAccount, 'tokenAccount');
-
+      console.log(getData('tokenAccount') === null);
       if (getData('tokenAccount') === null) {
         storeData('tokenAccount', tokenAccount.toString());
       }
     });
     testCreatePoolTokenAccount().then((poolTokenAccount) => {
       console.log(poolTokenAccount, 'poolTokenAccountr');
+      console.log(
+        getData('poolTokenAccounts') === null,
+        'getData(poolTokenAccounts) === null',
+      );
+      console.log(
+        getData('poolTokenAccount') === null,
+        'poolTokenAccountpoolTokenAccountpoolTokenAccountpoolTokenAccountNULLLLLLLL',
+      );
       if (getData('poolTokenAccount') === null) {
         storeData('poolTokenAccount', poolTokenAccount.toString());
       }

@@ -49,6 +49,7 @@ export default function MerchantScreen({navigation, route}: any) {
 
   const balance = async () => {
     const sourcePublicKeyStorage = await getData('tokenAccount');
+    console.log(sourcePublicKeyStorage, 'sourcePublicKeyStorage 525252');
     if (sourcePublicKeyStorage) {
       setAccountAddress(sourcePublicKeyStorage);
       console.log(sourcePublicKeyStorage, 'sourcePublicKeyStorage');
@@ -62,12 +63,12 @@ export default function MerchantScreen({navigation, route}: any) {
   useEffect(() => {
     balance();
   }, [navigation, route]);
-  useEffect(() => {
-    const interval = setInterval(() => {
-      balance();
-    }, 20000);
-    return () => clearInterval(interval);
-  }, []);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     balance();
+  //   }, 20000);
+  //   return () => clearInterval(interval);
+  // }, []);
   return (
     <DismissKeyboard>
       <View

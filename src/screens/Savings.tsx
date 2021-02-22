@@ -75,6 +75,10 @@ export default function SavingsScreen({navigation, route}: any) {
 
   const balance = async () => {
     const depositTokenPublicKeyStorage = await getData('poolTokenAccount');
+    console.log(
+      depositTokenPublicKeyStorage,
+      'depositTokenPublicKeyStorage 787878',
+    );
     const pk = new solanaWeb3.PublicKey(depositTokenPublicKeyStorage);
     const balance = await getBalance(pk);
     setBalance(balance);
