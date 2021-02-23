@@ -20,14 +20,7 @@ import {getBalance} from '../crypto/balance';
 import {Loader} from '../components/loader';
 
 import BN from 'bn.js';
-import {
-  addPrecision,
-  nonce,
-  poolMint,
-  poolTokenAccount,
-  savings,
-  tokenAccount,
-} from '../services/storageService';
+import {addPrecision, getData} from '../services/storageService';
 
 export default function WalletScreen({navigation, route}: any) {
   useFocusEffect(
@@ -55,7 +48,7 @@ export default function WalletScreen({navigation, route}: any) {
   const testTransferTokens = async () => {
     const account = new solanaWeb3.Account(SECRET);
 
-    const sourcePublicKeyStorage = tokenAccount;
+    const sourcePublicKeyStorage = await getData('tokenAccount');
     const pk = new solanaWeb3.PublicKey(sourcePublicKeyStorage);
     const balance = new BN(await getBalance(pk));
 
@@ -63,16 +56,16 @@ export default function WalletScreen({navigation, route}: any) {
 
     const destinationPublicKey = new solanaWeb3.PublicKey(dataQR?.address);
 
-    const depositTokenPublicKeyStorage = poolTokenAccount;
+    const depositTokenPublicKeyStorage = await getData('poolTokenAccount');
     const depositTokenPublicKey = new solanaWeb3.PublicKey(
       depositTokenPublicKeyStorage,
     );
 
-    const nonceStorage = nonce;
-    const poolMintStorage = poolMint;
-    const savingsStorage = savings;
+    const nonceStorage = await getData('nonce');
+    const poolMintStorage = await getData('poolMint');
+    const savingsStorage = await getData('savings');
 
-    const authority = await createAuthority(nonceStorage);
+    const authority = await createAuthority(await getData('nonceStorage'));
     const amount = addPrecision(dataQR?.amount.replace(/,/g, '.'));
     const releaseAmount = balance.sub(new BN(amount));
     const savingsAmount = releaseAmount.sub(
@@ -89,7 +82,7 @@ export default function WalletScreen({navigation, route}: any) {
       savingsStorage,
       depositTokenPublicKey,
       poolMintStorage,
-      amount,
+      amount.toString(),
       savingsAmount,
     );
   };

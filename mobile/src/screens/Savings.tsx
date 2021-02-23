@@ -5,13 +5,7 @@ import * as solanaWeb3 from '@pragma-technologies/react-native-solana';
 import {SECRET} from '../utils/Constants';
 import {createAuthority, getPullData} from '../crypto/pool';
 import {withdrawTokens} from '../crypto/withdraw';
-import {
-  nonce,
-  poolMint,
-  poolTokenAccount,
-  savings,
-  tokenAccount,
-} from '../services/storageService';
+import {getData} from '../services/storageService';
 import {getBalance} from '../crypto/balance';
 import {Loader} from '../components/loader';
 
@@ -33,16 +27,16 @@ export default function SavingsScreen({navigation, route}: any) {
   const testWithdraw = async () => {
     const account = new solanaWeb3.Account(SECRET);
     const savingBalance = (await balance()) * Math.pow(10, 9);
-    const sourcePublicKeyStorage = tokenAccount;
+    const sourcePublicKeyStorage = await getData('tokenAccount');
     const sourcePublicKey = new solanaWeb3.PublicKey(sourcePublicKeyStorage);
-    const depositTokenPublicKeyStorage = poolTokenAccount;
+    const depositTokenPublicKeyStorage = await getData('poolTokenAccount');
     const depositTokenPublicKey = new solanaWeb3.PublicKey(
       depositTokenPublicKeyStorage,
     );
 
-    const nonceStorage = nonce;
-    const poolMintStorage = poolMint;
-    const savingsStorage = savings;
+    const nonceStorage = await getData('nonce');
+    const poolMintStorage = await getData('poolMint');
+    const savingsStorage = await getData('savings');
 
     const authority = await createAuthority(nonceStorage);
 
@@ -77,7 +71,7 @@ export default function SavingsScreen({navigation, route}: any) {
   const [balanceCount, setBalance] = useState<number>();
 
   const balance = async () => {
-    const depositTokenPublicKeyStorage = poolTokenAccount;
+    const depositTokenPublicKeyStorage = await getData('poolTokenAccount');
 
     const pk = new solanaWeb3.PublicKey(depositTokenPublicKeyStorage);
     const balance = (await getBalance(pk)) / Math.pow(10, 9);

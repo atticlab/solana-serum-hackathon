@@ -14,7 +14,7 @@ import QRCode from 'react-native-qrcode-svg';
 import {useFocusEffect} from '@react-navigation/native';
 import * as solanaWeb3 from '@pragma-technologies/react-native-solana';
 import {getBalance} from '../crypto/balance';
-import {tokenAccount} from '../services/storageService';
+import {getData} from '../services/storageService';
 import {SOLANA_PRECISION} from '../utils/Constants';
 
 export const DismissKeyboard = ({children}: any) => (
@@ -50,7 +50,7 @@ export default function MerchantScreen({navigation, route}: any) {
   const [balanceCount, setBalance] = useState<number>();
 
   const balance = async () => {
-    const sourcePublicKeyStorage = tokenAccount;
+    const sourcePublicKeyStorage = await getData('tokenAccount');
     if (sourcePublicKeyStorage) {
       setAccountAddress(sourcePublicKeyStorage);
       const pk = new solanaWeb3.PublicKey(sourcePublicKeyStorage);
