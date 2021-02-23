@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TextInput,
   Alert,
+  ScrollView,
 } from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {DismissKeyboard} from './Merchant';
@@ -13,7 +14,7 @@ import ScanIcon from '../assets/images/qr.svg';
 // @ts-ignore
 import * as solanaWeb3 from '@pragma-technologies/react-native-solana';
 import {transferTokens} from '../crypto/transfer';
-import {SECRET} from '../utils/Constants';
+import {SECRET, SOLANA_PRECISION} from '../utils/Constants';
 import {createAuthority, getPullData} from '../crypto/pool';
 import {getBalance} from '../crypto/balance';
 import {Loader} from '../components/loader';
@@ -75,8 +76,8 @@ export default function WalletScreen({navigation, route}: any) {
     const amount = addPrecision(dataQR?.amount.replace(/,/g, '.'));
     const releaseAmount = balance.sub(new BN(amount));
     const savingsAmount = releaseAmount.sub(
-      new BN(Math.floor(releaseAmount / Math.pow(10, 9))).mul(
-        new BN(10).pow(new BN(9)),
+      new BN(Math.floor(releaseAmount / Math.pow(10, SOLANA_PRECISION))).mul(
+        new BN(10).pow(new BN(SOLANA_PRECISION)),
       ),
     );
 
@@ -96,6 +97,9 @@ export default function WalletScreen({navigation, route}: any) {
   const [loading, setLoading] = useState(false);
 
   const send = async () => {
+    if (!dataQR?.amount || !dataQR?.address || Number(dataQR?.amount) === 0)
+      return;
+
     setLoading(true);
     await testTransferTokens()
       .then((result) => {
@@ -116,48 +120,52 @@ export default function WalletScreen({navigation, route}: any) {
   }, [route]);
 
   return (
-    <>
+    <View style={{backgroundColor: '#fff', flex: 1}}>
       {loading && <Loader />}
       <DismissKeyboard>
-        <View
-          style={{
-            flex: 1,
-            paddingBottom: 100,
-            backgroundColor: '#fff',
-            paddingHorizontal: 20,
-          }}>
-          <View style={{marginTop: 20}}>
-            <Text style={styles.label}>Address</Text>
-            <TextInput
-              style={styles.input}
-              onChangeText={(text) => setDataQR({...dataQR, address: text})}
-              value={dataQR?.address}
-              placeholder={'Address'}
-              placeholderTextColor={'#8C8C8C'}
-            />
+        <ScrollView
+          contentContainerStyle={{flexGrow: 1}}
+          alwaysBounceVertical={false}>
+          <View
+            style={{
+              flex: 1,
+              paddingBottom: 100,
+              backgroundColor: '#fff',
+              paddingHorizontal: 20,
+            }}>
+            <View style={{marginTop: 20}}>
+              <Text style={styles.label}>Address</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={(text) => setDataQR({...dataQR, address: text})}
+                value={dataQR?.address}
+                placeholder={'Address'}
+                placeholderTextColor={'#8C8C8C'}
+              />
+            </View>
+            <View style={{marginTop: 20}}>
+              <Text style={styles.label}>Amount</Text>
+              <TextInput
+                style={styles.input}
+                keyboardType="numeric"
+                onChangeText={(text) =>
+                  setDataQR({
+                    ...dataQR,
+                    amount: text,
+                  })
+                }
+                value={dataQR?.amount || ''}
+                placeholder={'Amount'}
+                placeholderTextColor={'#8C8C8C'}
+              />
+            </View>
+            <TouchableOpacity style={styles.button} onPress={send}>
+              <Text style={styles.textBtn}>Send</Text>
+            </TouchableOpacity>
           </View>
-          <View style={{marginTop: 20}}>
-            <Text style={styles.label}>Amount</Text>
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              onChangeText={(text) =>
-                setDataQR({
-                  ...dataQR,
-                  amount: text,
-                })
-              }
-              value={dataQR?.amount || ''}
-              placeholder={'Amount'}
-              placeholderTextColor={'#8C8C8C'}
-            />
-          </View>
-          <TouchableOpacity style={styles.button} onPress={send}>
-            <Text style={styles.textBtn}>Send</Text>
-          </TouchableOpacity>
-        </View>
+        </ScrollView>
       </DismissKeyboard>
-    </>
+    </View>
   );
 }
 

@@ -32,11 +32,9 @@ export default function SavingsScreen({navigation, route}: any) {
 
   const testWithdraw = async () => {
     const account = new solanaWeb3.Account(SECRET);
-    // 1
     const savingBalance = (await balance()) * Math.pow(10, 9);
     const sourcePublicKeyStorage = tokenAccount;
     const sourcePublicKey = new solanaWeb3.PublicKey(sourcePublicKeyStorage);
-    // 2
     const depositTokenPublicKeyStorage = poolTokenAccount;
     const depositTokenPublicKey = new solanaWeb3.PublicKey(
       depositTokenPublicKeyStorage,

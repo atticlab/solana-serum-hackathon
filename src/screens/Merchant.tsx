@@ -8,12 +8,14 @@ import {
   TouchableOpacity,
   Keyboard,
   TouchableWithoutFeedback,
+  ScrollView,
 } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import {useFocusEffect} from '@react-navigation/native';
 import * as solanaWeb3 from '@pragma-technologies/react-native-solana';
 import {getBalance} from '../crypto/balance';
 import {tokenAccount} from '../services/storageService';
+import {SOLANA_PRECISION} from '../utils/Constants';
 
 export const DismissKeyboard = ({children}: any) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -69,45 +71,59 @@ export default function MerchantScreen({navigation, route}: any) {
   }, []);
 
   return (
-    <DismissKeyboard>
-      <View
-        style={{
-          flex: 1,
-          paddingTop: 20,
-          backgroundColor: '#fff',
-          paddingHorizontal: 20,
-        }}>
-        <View>
-          <Text style={styles.label}>Address</Text>
-          <View style={styles.infoBlockItem}>
-            <Text style={styles.address}>{`${accountAddress.substring(
-              0,
-              6,
-            )}…${accountAddress.substring(accountAddress.length - 4)}`}</Text>
+    <View style={{backgroundColor: '#fff', flex: 1}}>
+      <DismissKeyboard>
+        <ScrollView
+          contentContainerStyle={{flexGrow: 1}}
+          alwaysBounceVertical={false}>
+          <View
+            style={{
+              flex: 1,
+              paddingTop: 20,
+              backgroundColor: '#fff',
+              paddingHorizontal: 20,
+            }}>
+            <View>
+              <Text style={styles.label}>Address</Text>
+              <View style={styles.infoBlockItem}>
+                <Text style={styles.address}>{`${accountAddress.substring(
+                  0,
+                  6,
+                )}…${accountAddress.substring(
+                  accountAddress.length - 4,
+                )}`}</Text>
+              </View>
+            </View>
+            <View style={{marginTop: 20}}>
+              <Text style={styles.label}>Balance</Text>
+              <View style={styles.infoBlockItem}>
+                <Text style={styles.balance}>
+                  {parseFloat(
+                    (
+                      balanceCount / Math.pow(10, SOLANA_PRECISION) ?? 0
+                    ).toString(),
+                  ).toFixed(2)}
+                </Text>
+              </View>
+            </View>
+            <View style={{marginTop: 20}}>
+              <Text style={styles.label}>Amount</Text>
+              <TextInput
+                keyboardType="numeric"
+                style={styles.input}
+                onChangeText={(text) => onChangeText(text)}
+                value={value}
+                placeholder={'Write amount'}
+                placeholderTextColor={'#8C8C8C'}
+              />
+            </View>
+            <View style={{alignItems: 'center', marginTop: 40}}>
+              <QRCode size={150} value={returnObj(value.replace(/,/g, '.'))} />
+            </View>
           </View>
-        </View>
-        <View style={{marginTop: 20}}>
-          <Text style={styles.label}>Balance</Text>
-          <View style={styles.infoBlockItem}>
-            <Text style={styles.balance}>{balanceCount / Math.pow(10, 9)}</Text>
-          </View>
-        </View>
-        <View style={{marginTop: 20}}>
-          <Text style={styles.label}>Amount</Text>
-          <TextInput
-            keyboardType="numeric"
-            style={styles.input}
-            onChangeText={(text) => onChangeText(text.replace(/[^0-9\.]/g, ''))}
-            value={value}
-            placeholder={'Write amount'}
-            placeholderTextColor={'#8C8C8C'}
-          />
-        </View>
-        <View style={{alignItems: 'center', marginTop: 40}}>
-          <QRCode size={150} value={returnObj(value)} />
-        </View>
-      </View>
-    </DismissKeyboard>
+        </ScrollView>
+      </DismissKeyboard>
+    </View>
   );
 }
 
@@ -117,21 +133,17 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 10,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
-    backgroundColor: '#E7E7E7',
     paddingVertical: 13,
     paddingHorizontal: 15,
   },
-  label: {
-    color: '#8C8C8C',
-    marginBottom: 5,
-  },
+  label: {fontSize: 15, color: '#8C8C8C', marginBottom: 5},
   address: {
-    fontWeight: '500',
-    fontSize: 19,
+    fontWeight: '800',
+    fontSize: 26,
   },
   balance: {
-    fontWeight: '500',
-    fontSize: 19,
+    fontWeight: '800',
+    fontSize: 26,
   },
   input: {
     fontSize: 19,
