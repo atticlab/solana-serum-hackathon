@@ -53,7 +53,7 @@ export function approveInstruction(
   source: solanaWeb3.PublicKey,
   delegate: solanaWeb3.PublicKey,
   owner: solanaWeb3.PublicKey,
-  amount: number,
+  amount: BN,
 ) {
   const keys = [
     {pubkey: source, isSigner: false, isWritable: true},
@@ -78,7 +78,7 @@ export function depositInstruction(
   savingsMint: solanaWeb3.PublicKey,
   depositPublicKey: solanaWeb3.PublicKey,
   poolMint: solanaWeb3.PublicKey,
-  amount: number,
+  amount: BN,
 ) {
   const keys = [
     {pubkey: savingsPool, isSigner: false, isWritable: true},
@@ -108,7 +108,7 @@ export function withdrawInstruction(
   source: solanaWeb3.PublicKey,
   destination: solanaWeb3.PublicKey,
   savingsMint: solanaWeb3.PublicKey,
-  amount: number,
+  amount: BN,
 ) {
   const keys = [
     {pubkey: savingsPool, isSigner: false, isWritable: true},

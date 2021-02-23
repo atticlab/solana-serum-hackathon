@@ -1,4 +1,5 @@
 import * as solanaWeb3 from '@pragma-technologies/react-native-solana';
+import {BN} from 'bn.js';
 import {
   transferInstruction,
   approveInstruction,
@@ -19,8 +20,8 @@ export async function transferTokens(
   savingsPublicKey: solanaWeb3.PublicKey,
   depositPublicKey: solanaWeb3.PublicKey,
   poolMint: solanaWeb3.PublicKey,
-  amount: string,
-  amountToDeposit: number,
+  amount: BN,
+  amountToDeposit: BN,
 ) {
   const destAccountInfo = await connection.getAccountInfo(destPublicKey);
 

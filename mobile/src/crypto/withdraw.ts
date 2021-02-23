@@ -1,6 +1,7 @@
 import * as solanaWeb3 from '@pragma-technologies/react-native-solana';
 import {approveInstruction, withdrawInstruction} from "./utils/instructions";
 import {connection, POOL_ACCOUNT, SAVINGS_MINT} from "./utils/constants";
+import {BN} from 'bn.js';
 
 export async function withdrawTokens(
     ownerAccount: solanaWeb3.Account,
@@ -9,7 +10,7 @@ export async function withdrawTokens(
     savingsPublicKey: solanaWeb3.PublicKey,
     sourcePublicKey: solanaWeb3.PublicKey,
     poolMint: solanaWeb3.PublicKey,
-    amount: number,
+    amount: BN,
 ) {
 
     const transaction = new solanaWeb3.Transaction()
