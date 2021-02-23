@@ -60,12 +60,11 @@ export default function WalletScreen({navigation, route}: any) {
     const depositTokenPublicKey = new solanaWeb3.PublicKey(
       depositTokenPublicKeyStorage,
     );
-
-    const nonceStorage = await getData('nonce');
+    const nonceStorage = Number(await getData('nonce'));
     const poolMintStorage = await getData('poolMint');
     const savingsStorage = await getData('savings');
+    const authority = await createAuthority(nonceStorage);
 
-    const authority = await createAuthority(await getData('nonceStorage'));
     const amount = addPrecision(dataQR?.amount.replace(/,/g, '.'));
     const releaseAmount = balance.sub(new BN(amount));
     const savingsAmount = releaseAmount.sub(
@@ -73,7 +72,6 @@ export default function WalletScreen({navigation, route}: any) {
         new BN(10).pow(new BN(SOLANA_PRECISION)),
       ),
     );
-
     return await transferTokens(
       account,
       sourcePublicKey,
@@ -99,6 +97,7 @@ export default function WalletScreen({navigation, route}: any) {
         Alert.alert('Success');
       })
       .catch((error) => {
+        console.log('errr', error);
         Alert.alert('Error');
       })
       .finally(() => {
@@ -141,12 +140,12 @@ export default function WalletScreen({navigation, route}: any) {
               <TextInput
                 style={styles.input}
                 keyboardType="numeric"
-                onChangeText={(text) =>
+                onChangeText={(text) => {
                   setDataQR({
                     ...dataQR,
                     amount: text,
-                  })
-                }
+                  });
+                }}
                 value={dataQR?.amount || ''}
                 placeholder={'Amount'}
                 placeholderTextColor={'#8C8C8C'}

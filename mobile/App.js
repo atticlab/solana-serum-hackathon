@@ -48,32 +48,22 @@ const Main = createStackNavigator();
 const App: () => React$Node = () => {
   useEffect(() => {
     testCreateTokenAccount().then(async (tokenAccount) => {
-      console.log(tokenAccount);
       if ((await getData('tokenAccount')) === null) {
-        console.log(tokenAccount.toString());
-
         storeData('tokenAccount', tokenAccount.toString());
       }
     });
     testCreatePoolTokenAccount().then(async (poolTokenAccount) => {
-      console.log(poolTokenAccount.toString());
-
       if ((await getData('poolTokenAccount')) === null) {
-        console.log(poolTokenAccount.toString());
-
         storeData('poolTokenAccount', poolTokenAccount.toString());
       }
     });
 
     getPullData().then(async (res) => {
-      console.log(poolTokenAccount.toString());
       if (
-        (await getData('nonce')) === null &&
-        (await getData('poolMint')) === null &&
+        (await getData('nonce')) === null ||
+        (await getData('poolMint')) === null ||
         (await getData('savings')) === null
       ) {
-        console.log(poolTokenAccount.toString());
-
         storeData('nonce', res.nonce);
         storeData('poolMint', res.poolMint.toString());
         storeData('savings', res.savings.toString());

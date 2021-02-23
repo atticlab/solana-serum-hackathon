@@ -1,4 +1,5 @@
 import * as solanaWeb3 from '@pragma-technologies/react-native-solana';
+import {BN} from 'bn.js';
 import {
   CONTRACT_PROGRAM_ID,
   encodeContractInstructionData,
@@ -31,7 +32,7 @@ export function transferInstruction(
   source: solanaWeb3.PublicKey,
   destination: solanaWeb3.PublicKey,
   owner: solanaWeb3.PublicKey,
-  amount: string,
+  amount: BN,
 ) {
   const keys = [
     {pubkey: source, isSigner: false, isWritable: true},
