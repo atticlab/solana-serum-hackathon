@@ -42,21 +42,26 @@ export default function WalletScreen({navigation, route}: any) {
   );
 
   const [dataQR, setDataQR] = useState(route?.params?.data);
+  console.log(dataQR);
   const testTransferTokens = async () => {
     const account = new solanaWeb3.Account(SECRET);
     // 1
     const sourcePublicKeyStorage = await getData('tokenAccount');
-    console.log(sourcePublicKeyStorage, 'sourcePublicKeyStorage');
+    console.log(sourcePublicKeyStorage, 'sourcePublicKeyStorage5050505050505');
     const pk = new solanaWeb3.PublicKey(sourcePublicKeyStorage);
     const balance = await getBalance(pk);
     console.log(balance, 'balance');
     const sourcePublicKey = new solanaWeb3.PublicKey(
       // 'HxkvUmLEzHnddbMqJmU6xYf8UqBrpVbJqgKzYEv7g28r',
+      // 'FrADbv4YB2qgac1JhSK6FLpmbwMGfAbg32BEAM7pJkSD',
       sourcePublicKeyStorage,
     );
     // dataQR
+    console.log(dataQR?.address, 'dataQR?.address');
     const destinationPublicKey = new solanaWeb3.PublicKey(
       // 'J82L8cnT1tCHWbR286H3bYsJ6dfoDCC8Ymr4A1r72RAM',
+      // '5TpMrny4oZzjoSX6HQixMZzwFvsfZV24nZ9TKYRVHLGn',
+      // '7quYDpkzmxS73kcrM4E7Yq82vuDcVv8HUqTzmFaCFBK7',
       dataQR?.address,
     );
     // 2
@@ -73,7 +78,7 @@ export default function WalletScreen({navigation, route}: any) {
     const savingsStorage = await getData('savings');
 
     const authority = await createAuthority(nonceStorage);
-
+    console.log(dataQR?.amount, 'dataQR?.amountdataQR?.amountdataQR?.amount');
     return await transferTokens(
       account,
       sourcePublicKey,
@@ -83,7 +88,7 @@ export default function WalletScreen({navigation, route}: any) {
       depositTokenPublicKey,
       poolMintStorage,
       dataQR?.amount,
-      5,
+      1,
     );
   };
 
@@ -137,13 +142,21 @@ export default function WalletScreen({navigation, route}: any) {
             <TextInput
               keyboardType="numeric"
               style={styles.input}
-              onChangeText={(text) => setDataQR({...dataQR, amount: text})}
+              onChangeText={(text) =>
+                setDataQR({
+                  ...dataQR,
+                  amount: text.replace(/[^0-9\.]/g, ''),
+                })
+              }
               value={dataQR?.amount || ''}
               placeholder={'Amount'}
               placeholderTextColor={'#8C8C8C'}
             />
           </View>
-          <TouchableOpacity style={styles.button} onPress={send}>
+          <TouchableOpacity
+            // disabled={!dataQR.amount || !dataQR.address}
+            style={styles.button}
+            onPress={send}>
             <Text style={styles.textBtn}>Send</Text>
           </TouchableOpacity>
         </View>
@@ -192,7 +205,7 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     backgroundColor: '#EBEBEB',
     borderRadius: 10,
-    paddingLeft: 15,
+    paddingHorizontal: 15,
   },
   textBtn: {
     textAlign: 'center',

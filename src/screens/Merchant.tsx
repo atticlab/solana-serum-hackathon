@@ -55,20 +55,20 @@ export default function MerchantScreen({navigation, route}: any) {
       console.log(sourcePublicKeyStorage, 'sourcePublicKeyStorage');
       const pk = new solanaWeb3.PublicKey(sourcePublicKeyStorage);
       const balance = await getBalance(pk);
-      setBalance(balance / Math.pow(10, 9));
+      setBalance(balance);
       console.log(balance);
     }
   };
-
+  console.log(route, 'navigation');
   useEffect(() => {
     balance();
-  }, [navigation, route]);
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     balance();
-  //   }, 20000);
-  //   return () => clearInterval(interval);
-  // }, []);
+  }, [route]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      balance();
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
   return (
     <DismissKeyboard>
       <View
@@ -98,7 +98,7 @@ export default function MerchantScreen({navigation, route}: any) {
           <TextInput
             keyboardType="numeric"
             style={styles.input}
-            onChangeText={(text) => onChangeText(text)}
+            onChangeText={(text) => onChangeText(text.replace(/[^0-9\.]/g, ''))}
             value={value}
             placeholder={'Write amount'}
             placeholderTextColor={'#8C8C8C'}
@@ -139,6 +139,6 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     backgroundColor: '#EBEBEB',
     borderRadius: 10,
-    paddingLeft: 15,
+    paddingHorizontal: 15,
   },
 });

@@ -60,6 +60,7 @@ export default function SavingsScreen({navigation, route}: any) {
     await testWithdraw()
       .then(async (res) => {
         console.log(res, 'result withdraw');
+        await balance();
         Alert.alert('Success');
       })
       .catch((error) => {
@@ -88,6 +89,12 @@ export default function SavingsScreen({navigation, route}: any) {
   useEffect(() => {
     balance();
   }, [route]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      balance();
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
   return (
     <>
       {loading && <Loader />}
@@ -111,7 +118,10 @@ export default function SavingsScreen({navigation, route}: any) {
             <Text style={styles.info}>APY : 25%</Text>
           </View>
         </View>
-        <TouchableOpacity style={styles.button} onPress={withdraw}>
+        <TouchableOpacity
+          disabled={!balanceCount}
+          style={styles.button}
+          onPress={withdraw}>
           <Text style={styles.textBtn}>Withdraw</Text>
         </TouchableOpacity>
       </View>

@@ -62,6 +62,11 @@ const App: () => React$Node = () => {
     });
 
     getPullData().then(async (res) => {
+      console.log(
+        (await getData('nonce')) === null &&
+          (await getData('poolMint')) === null &&
+          (await getData('savings')) === null,
+      );
       if (
         (await getData('nonce')) === null &&
         (await getData('poolMint')) === null &&

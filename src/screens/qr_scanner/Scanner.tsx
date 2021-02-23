@@ -88,16 +88,16 @@ class Scanner extends Component<ScannerOwnProps> {
   };
 
   onBarCodeRead = (event: any) => {
-    if (typeof event.data === 'object') {
-      const data = JSON.parse(event.data);
-      if (data.address && data.amount) {
-        this.props.navigation.navigate('Wallet', {data});
-      } else {
-        this.setState({error: 'Error'});
-      }
+    // if (typeof event.data === 'object') {
+    const data = JSON.parse(event.data);
+    if (data.amount) {
+      this.props.navigation.navigate('Wallet', {data});
     } else {
       this.setState({error: 'Error'});
     }
+    // } else {
+    //   this.setState({error: 'Error'});
+    // }
   };
 
   render(): JSX.Element {
