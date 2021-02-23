@@ -60,19 +60,11 @@ class Scanner extends Component<ScannerOwnProps> {
               {width: sideContainerWidth, height: maskSize},
             ]}
           />
-
           <View style={{width: maskSize, height: maskSize}}>
             <View style={styles.titleContainer}>
               <Text style={styles.title}>{this.state.error}</Text>
             </View>
-
-            <View style={styles.flashIcon}>
-              <TouchableOpacity onPress={() => this.switchFlashMode()}>
-                {/* <FlashIcon /> */}
-              </TouchableOpacity>
-            </View>
           </View>
-
           <View
             style={[
               styles.sideContainer,
@@ -88,16 +80,15 @@ class Scanner extends Component<ScannerOwnProps> {
   };
 
   onBarCodeRead = (event: any) => {
-    // if (typeof event.data === 'object') {
     const data = JSON.parse(event.data);
-    if (data.amount) {
-      this.props.navigation.navigate('Wallet', {data});
+    if (!data.amount) {
+      this.setState({error: 'Invalid amount'});
+    } else if (!data.amount) {
+      this.setState({error: 'Invalid address'});
     } else {
-      this.setState({error: 'Error'});
+      this.props.navigation.navigate('Wallet', {data});
+      this.setState({error: ''});
     }
-    // } else {
-    //   this.setState({error: 'Error'});
-    // }
   };
 
   render(): JSX.Element {

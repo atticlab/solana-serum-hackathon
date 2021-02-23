@@ -1,13 +1,8 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {DismissKeyboard} from './Merchant';
-// @ts-ignore
-// import solanaWeb3 from '../utils/solanaWeb3';
 
 export default function SettingsScreen() {
-  // const [value, setValue] = useState('');
-
-  // const account = new solanaWeb3.Account();
   return (
     <DismissKeyboard>
       <View
@@ -26,25 +21,8 @@ export default function SettingsScreen() {
           </View>
           <View>
             <Text style={styles.title}>Private key</Text>
-            <View style={styles.addressBlock}>
-              {/* <Text style={styles.address}>
-                {`${account.publicKey
-                  .toString()
-                  .substring(0, 6)}…${account.publicKey
-                  .toString()
-                  .substring(account.publicKey.toString().length - 4)}`}
-              </Text> */}
-            </View>
+            <View style={styles.addressBlock}></View>
           </View>
-          {/* <View>
-            <Text style={styles.title}>Private key</Text>
-            <TextInput
-              style={styles.input}
-              onChangeText={(text) => setValue(text)}
-              value={value}
-              placeholder={'Private key'}
-            />
-          </View> */}
         </View>
       </View>
     </DismissKeyboard>
