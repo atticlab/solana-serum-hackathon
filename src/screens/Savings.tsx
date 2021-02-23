@@ -5,9 +5,17 @@ import * as solanaWeb3 from '@pragma-technologies/react-native-solana';
 import {SECRET} from '../utils/Constants';
 import {createAuthority, getPullData} from '../crypto/pool';
 import {withdrawTokens} from '../crypto/withdraw';
-import {getData} from '../services/storageService';
+import {
+  nonce,
+  poolMint,
+  poolTokenAccount,
+  savings,
+  tokenAccount,
+} from '../services/storageService';
 import {getBalance} from '../crypto/balance';
 import {Loader} from '../components/loader';
+
+import BN from 'bn.js';
 
 export default function SavingsScreen({navigation, route}: any) {
   useFocusEffect(
@@ -25,22 +33,18 @@ export default function SavingsScreen({navigation, route}: any) {
   const testWithdraw = async () => {
     const account = new solanaWeb3.Account(SECRET);
     // 1
-    const sourcePublicKeyStorage = await getData('tokenAccount');
-    const sourcePublicKey = new solanaWeb3.PublicKey(
-      // 'HxkvUmLEzHnddbMqJmU6xYf8UqBrpVbJqgKzYEv7g28r',
-      sourcePublicKeyStorage,
-    );
+    const savingBalance = (await balance()) * Math.pow(10, 9);
+    const sourcePublicKeyStorage = tokenAccount;
+    const sourcePublicKey = new solanaWeb3.PublicKey(sourcePublicKeyStorage);
     // 2
-    const depositTokenPublicKeyStorage = await getData('poolTokenAccount');
+    const depositTokenPublicKeyStorage = poolTokenAccount;
     const depositTokenPublicKey = new solanaWeb3.PublicKey(
-      // '2rFuPBhMT8jaEZJA3E2dxwQDU9LRXEY771bhhjZcTAef',
       depositTokenPublicKeyStorage,
     );
 
-    // const poolData = await getPullData();
-    const nonceStorage = await getData('nonce');
-    const poolMintStorage = await getData('poolMint');
-    const savingsStorage = await getData('savings');
+    const nonceStorage = nonce;
+    const poolMintStorage = poolMint;
+    const savingsStorage = savings;
 
     const authority = await createAuthority(nonceStorage);
 
@@ -51,16 +55,16 @@ export default function SavingsScreen({navigation, route}: any) {
       savingsStorage,
       sourcePublicKey,
       poolMintStorage,
-      balanceCount,
+      savingBalance,
     );
   };
+
   const [loading, setLoading] = useState(false);
   const withdraw = async () => {
     setLoading(true);
     await testWithdraw()
       .then(async (res) => {
         console.log(res, 'result withdraw');
-        await balance();
         Alert.alert('Success');
       })
       .catch((error) => {
@@ -75,26 +79,25 @@ export default function SavingsScreen({navigation, route}: any) {
   const [balanceCount, setBalance] = useState<number>();
 
   const balance = async () => {
-    const depositTokenPublicKeyStorage = await getData('poolTokenAccount');
-    console.log(
-      depositTokenPublicKeyStorage,
-      'depositTokenPublicKeyStorage 787878',
-    );
+    const depositTokenPublicKeyStorage = poolTokenAccount;
+
     const pk = new solanaWeb3.PublicKey(depositTokenPublicKeyStorage);
-    const balance = await getBalance(pk);
+    const balance = (await getBalance(pk)) / Math.pow(10, 9);
     setBalance(balance);
-    console.log(balance);
+    return balance;
   };
 
   useEffect(() => {
     balance();
   }, [route]);
+
   useEffect(() => {
     const interval = setInterval(() => {
       balance();
     }, 1000);
     return () => clearInterval(interval);
   }, []);
+
   return (
     <>
       {loading && <Loader />}
@@ -109,8 +112,8 @@ export default function SavingsScreen({navigation, route}: any) {
         <View style={{paddingTop: 50}}>
           <View>
             <Text style={styles.label}>Balance</Text>
-            <Text style={{fontSize: 65, fontWeight: '900'}}>
-              {balanceCount}
+            <Text style={{fontSize: 45, fontWeight: '900'}}>
+              {parseFloat((balanceCount ?? 0).toString()).toFixed(2)}
             </Text>
           </View>
           <View>

@@ -9,16 +9,24 @@ import {
 } from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {DismissKeyboard} from './Merchant';
-
 import ScanIcon from '../assets/images/qr.svg';
 // @ts-ignore
 import * as solanaWeb3 from '@pragma-technologies/react-native-solana';
 import {transferTokens} from '../crypto/transfer';
 import {SECRET} from '../utils/Constants';
 import {createAuthority, getPullData} from '../crypto/pool';
-import {getData} from '../services/storageService';
 import {getBalance} from '../crypto/balance';
 import {Loader} from '../components/loader';
+
+import BN from 'bn.js';
+import {
+  addPrecision,
+  nonce,
+  poolMint,
+  poolTokenAccount,
+  savings,
+  tokenAccount,
+} from '../services/storageService';
 
 export default function WalletScreen({navigation, route}: any) {
   useFocusEffect(
@@ -30,7 +38,7 @@ export default function WalletScreen({navigation, route}: any) {
           headerRight: () => {
             return (
               <TouchableOpacity
-                style={{paddingRight: 10, position: 'absolute'}}
+                style={{paddingRight: 20, position: 'absolute'}}
                 onPress={() => navigation.navigate('Scanner')}>
                 <ScanIcon />
               </TouchableOpacity>
@@ -42,43 +50,36 @@ export default function WalletScreen({navigation, route}: any) {
   );
 
   const [dataQR, setDataQR] = useState(route?.params?.data);
-  console.log(dataQR);
+
   const testTransferTokens = async () => {
     const account = new solanaWeb3.Account(SECRET);
-    // 1
-    const sourcePublicKeyStorage = await getData('tokenAccount');
-    console.log(sourcePublicKeyStorage, 'sourcePublicKeyStorage5050505050505');
-    const pk = new solanaWeb3.PublicKey(sourcePublicKeyStorage);
-    const balance = await getBalance(pk);
-    console.log(balance, 'balance');
-    const sourcePublicKey = new solanaWeb3.PublicKey(
-      // 'HxkvUmLEzHnddbMqJmU6xYf8UqBrpVbJqgKzYEv7g28r',
-      // 'FrADbv4YB2qgac1JhSK6FLpmbwMGfAbg32BEAM7pJkSD',
-      sourcePublicKeyStorage,
-    );
-    // dataQR
-    console.log(dataQR?.address, 'dataQR?.address');
-    const destinationPublicKey = new solanaWeb3.PublicKey(
-      // 'J82L8cnT1tCHWbR286H3bYsJ6dfoDCC8Ymr4A1r72RAM',
-      // '5TpMrny4oZzjoSX6HQixMZzwFvsfZV24nZ9TKYRVHLGn',
-      // '7quYDpkzmxS73kcrM4E7Yq82vuDcVv8HUqTzmFaCFBK7',
-      dataQR?.address,
-    );
-    // 2
-    const depositTokenPublicKeyStorage = await getData('poolTokenAccount');
 
-    console.log(depositTokenPublicKeyStorage, 'depositTokenPublicKeyStorage');
+    const sourcePublicKeyStorage = tokenAccount;
+    const pk = new solanaWeb3.PublicKey(sourcePublicKeyStorage);
+    const balance = new BN(await getBalance(pk));
+
+    const sourcePublicKey = new solanaWeb3.PublicKey(sourcePublicKeyStorage);
+
+    const destinationPublicKey = new solanaWeb3.PublicKey(dataQR?.address);
+
+    const depositTokenPublicKeyStorage = poolTokenAccount;
     const depositTokenPublicKey = new solanaWeb3.PublicKey(
-      // '2rFuPBhMT8jaEZJA3E2dxwQDU9LRXEY771bhhjZcTAef',
       depositTokenPublicKeyStorage,
     );
 
-    const nonceStorage = await getData('nonce');
-    const poolMintStorage = await getData('poolMint');
-    const savingsStorage = await getData('savings');
+    const nonceStorage = nonce;
+    const poolMintStorage = poolMint;
+    const savingsStorage = savings;
 
     const authority = await createAuthority(nonceStorage);
-    console.log(dataQR?.amount, 'dataQR?.amountdataQR?.amountdataQR?.amount');
+    const amount = addPrecision(dataQR?.amount.replace(/,/g, '.'));
+    const releaseAmount = balance.sub(new BN(amount));
+    const savingsAmount = releaseAmount.sub(
+      new BN(Math.floor(releaseAmount / Math.pow(10, 9))).mul(
+        new BN(10).pow(new BN(9)),
+      ),
+    );
+
     return await transferTokens(
       account,
       sourcePublicKey,
@@ -87,8 +88,8 @@ export default function WalletScreen({navigation, route}: any) {
       savingsStorage,
       depositTokenPublicKey,
       poolMintStorage,
-      dataQR?.amount,
-      1,
+      amount,
+      savingsAmount,
     );
   };
 
@@ -98,11 +99,9 @@ export default function WalletScreen({navigation, route}: any) {
     setLoading(true);
     await testTransferTokens()
       .then((result) => {
-        console.log(result, 'result');
         Alert.alert('Success');
       })
       .catch((error) => {
-        console.log(error, 'error');
         Alert.alert('Error');
       })
       .finally(() => {
@@ -140,12 +139,12 @@ export default function WalletScreen({navigation, route}: any) {
           <View style={{marginTop: 20}}>
             <Text style={styles.label}>Amount</Text>
             <TextInput
-              keyboardType="numeric"
               style={styles.input}
+              keyboardType="numeric"
               onChangeText={(text) =>
                 setDataQR({
                   ...dataQR,
-                  amount: text.replace(/[^0-9\.]/g, ''),
+                  amount: text,
                 })
               }
               value={dataQR?.amount || ''}
@@ -153,10 +152,7 @@ export default function WalletScreen({navigation, route}: any) {
               placeholderTextColor={'#8C8C8C'}
             />
           </View>
-          <TouchableOpacity
-            // disabled={!dataQR.amount || !dataQR.address}
-            style={styles.button}
-            onPress={send}>
+          <TouchableOpacity style={styles.button} onPress={send}>
             <Text style={styles.textBtn}>Send</Text>
           </TouchableOpacity>
         </View>

@@ -11,9 +11,9 @@ import {
 } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import {useFocusEffect} from '@react-navigation/native';
-import {getData} from '../services/storageService';
 import * as solanaWeb3 from '@pragma-technologies/react-native-solana';
 import {getBalance} from '../crypto/balance';
+import {tokenAccount} from '../services/storageService';
 
 export const DismissKeyboard = ({children}: any) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -48,27 +48,26 @@ export default function MerchantScreen({navigation, route}: any) {
   const [balanceCount, setBalance] = useState<number>();
 
   const balance = async () => {
-    const sourcePublicKeyStorage = await getData('tokenAccount');
-    console.log(sourcePublicKeyStorage, 'sourcePublicKeyStorage 525252');
+    const sourcePublicKeyStorage = tokenAccount;
     if (sourcePublicKeyStorage) {
       setAccountAddress(sourcePublicKeyStorage);
-      console.log(sourcePublicKeyStorage, 'sourcePublicKeyStorage');
       const pk = new solanaWeb3.PublicKey(sourcePublicKeyStorage);
       const balance = await getBalance(pk);
       setBalance(balance);
-      console.log(balance);
     }
   };
-  console.log(route, 'navigation');
+
   useEffect(() => {
     balance();
   }, [route]);
+
   useEffect(() => {
     const interval = setInterval(() => {
       balance();
     }, 1000);
     return () => clearInterval(interval);
   }, []);
+
   return (
     <DismissKeyboard>
       <View
@@ -90,7 +89,7 @@ export default function MerchantScreen({navigation, route}: any) {
         <View style={{marginTop: 20}}>
           <Text style={styles.label}>Balance</Text>
           <View style={styles.infoBlockItem}>
-            <Text style={styles.balance}>{balanceCount}</Text>
+            <Text style={styles.balance}>{balanceCount / Math.pow(10, 9)}</Text>
           </View>
         </View>
         <View style={{marginTop: 20}}>

@@ -36,8 +36,8 @@ import {
   testCreatePoolTokenAccount,
   testCreateTokenAccount,
   testTransferTokens,
+  testCreateAuthority,
 } from './src/examples';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getData, storeData} from './src/services/storageService';
 import {getBalance} from './src/crypto/balance';
 
@@ -45,39 +45,6 @@ const Tab = createBottomTabNavigator();
 const Main = createStackNavigator();
 
 const App: () => React$Node = () => {
-  useEffect(() => {
-    testCreateTokenAccount().then(async (tokenAccount) => {
-      if ((await getData('tokenAccount')) === null) {
-        storeData('tokenAccount', tokenAccount.toString());
-      }
-    });
-    testCreatePoolTokenAccount().then(async (poolTokenAccount) => {
-      console.log(
-        (await getData('poolTokenAccount')) === null,
-        '5555555555555555555',
-      );
-      if ((await getData('poolTokenAccount')) === null) {
-        storeData('poolTokenAccount', poolTokenAccount.toString());
-      }
-    });
-
-    getPullData().then(async (res) => {
-      console.log(
-        (await getData('nonce')) === null &&
-          (await getData('poolMint')) === null &&
-          (await getData('savings')) === null,
-      );
-      if (
-        (await getData('nonce')) === null &&
-        (await getData('poolMint')) === null &&
-        (await getData('savings')) === null
-      ) {
-        storeData('nonce', res.nonce);
-        storeData('poolMint', res.poolMint.toString());
-        storeData('savings', res.savings.toString());
-      }
-    });
-  }, []);
   function MyTabs() {
     return (
       <Tab.Navigator
@@ -137,15 +104,6 @@ const App: () => React$Node = () => {
               borderBottomWidth: 0,
             },
             headerTitleStyle: {alignSelf: 'center'},
-            // headerRight: () => {
-            //   return (
-            //     <TouchableOpacity
-            //       style={{paddingRight: 10, position: 'absolute'}}
-            //       onPress={() => navigation.navigate('Settings')}>
-            //       <SettingIcon />
-            //     </TouchableOpacity>
-            //   );
-            // },
           };
         }}>
         <Main.Screen
