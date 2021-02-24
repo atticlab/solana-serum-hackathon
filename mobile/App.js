@@ -25,17 +25,17 @@ const App: () => React$Node = () => {
   useEffect(() => {
     createTokenAccount().then(async (tokenAccount) => {
       if ((await getData('tokenAccount')) === null) {
-        storeData('tokenAccount', tokenAccount.toString());
+        await storeData('tokenAccount', tokenAccount.toString());
       }
     });
     createTokenAccount().then(async (tokenAccount) => {
       if ((await getData('tokenMerchantAccount')) === null) {
-        storeData('tokenMerchantAccount', tokenAccount.toString());
+        await storeData('tokenMerchantAccount', tokenAccount.toString());
       }
     });
     createPoolTokenAccount().then(async (poolTokenAccount) => {
       if ((await getData('poolTokenAccount')) === null) {
-        storeData('poolTokenAccount', poolTokenAccount.toString());
+        await storeData('poolTokenAccount', poolTokenAccount.toString());
       }
     });
     getPullData().then(async (res) => {
@@ -44,9 +44,9 @@ const App: () => React$Node = () => {
         (await getData('poolMint')) === null ||
         (await getData('savings')) === null
       ) {
-        storeData('nonce', res.nonce);
-        storeData('poolMint', res.poolMint.toString());
-        storeData('savings', res.savings.toString());
+        await storeData('nonce', res.nonce);
+        await storeData('poolMint', res.poolMint.toString());
+        await storeData('savings', res.savings.toString());
       }
     });
   }, []);

@@ -22,7 +22,7 @@ export async function transferTokens(
   poolMint: solanaWeb3.PublicKey,
   amount: BN,
   amountToDeposit: BN,
-) {
+): Promise<string> {
   const destAccountInfo = await connection.getAccountInfo(destPublicKey);
 
   if (!destAccountInfo?.owner.equals(TOKEN_PROGRAM_ID)) {
@@ -77,7 +77,7 @@ export async function transferTokensFromMerchant(
     sourcePublicKey: solanaWeb3.PublicKey,
     destPublicKey: solanaWeb3.PublicKey,
     amount: BN,
-) {
+): Promise<string> {
   const transaction = new solanaWeb3.Transaction();
 
   transaction.add(

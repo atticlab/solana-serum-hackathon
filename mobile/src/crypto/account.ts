@@ -7,7 +7,7 @@ export async function createAndInitializeTokenAccount(
     payer: solanaWeb3.Account,
     mintPublicKey: solanaWeb3.PublicKey,
     newAccount: solanaWeb3.Account,
-) {
+): Promise<string> {
     const transaction = new solanaWeb3.Transaction();
 
     const lamportsForAccount = await connection.getMinimumBalanceForRentExemption(
