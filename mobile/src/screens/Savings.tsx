@@ -2,14 +2,12 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import * as solanaWeb3 from '@pragma-technologies/react-native-solana';
-import {SECRET} from '../utils/Constants';
-import {createAuthority, getPullData} from '../crypto/pool';
+import {createAuthority} from '../crypto/pool';
 import {withdrawTokens} from '../crypto/withdraw';
 import {getData} from '../services/storageService';
 import {getBalance} from '../crypto/balance';
 import {Loader} from '../components/loader';
-
-import BN from 'bn.js';
+import {OWNER_ACCOUNT} from "../crypto/utils/constants";
 
 export default function SavingsScreen({navigation, route}: any) {
   useFocusEffect(
@@ -25,7 +23,6 @@ export default function SavingsScreen({navigation, route}: any) {
   );
 
   const testWithdraw = async () => {
-    const account = new solanaWeb3.Account(SECRET);
     const savingBalance = (await balance()) * Math.pow(10, 9);
     const sourcePublicKeyStorage = await getData('tokenAccount');
     const sourcePublicKey = new solanaWeb3.PublicKey(sourcePublicKeyStorage);
@@ -41,7 +38,7 @@ export default function SavingsScreen({navigation, route}: any) {
     const authority = await createAuthority(nonceStorage);
 
     return await withdrawTokens(
-      account,
+      OWNER_ACCOUNT,
       depositTokenPublicKey,
       authority,
       savingsStorage,
@@ -55,7 +52,7 @@ export default function SavingsScreen({navigation, route}: any) {
   const withdraw = async () => {
     setLoading(true);
     await testWithdraw()
-      .then(async (res) => {
+      .then((res) => {
         console.log(res, 'result withdraw');
         Alert.alert('Success');
       })
@@ -80,12 +77,12 @@ export default function SavingsScreen({navigation, route}: any) {
   };
 
   useEffect(() => {
-    balance();
+    balance().then();
   }, [route]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      balance();
+      balance().then();
     }, 1000);
     return () => clearInterval(interval);
   }, []);

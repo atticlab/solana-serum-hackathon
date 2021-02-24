@@ -11,7 +11,7 @@ export async function withdrawTokens(
     sourcePublicKey: solanaWeb3.PublicKey,
     poolMint: solanaWeb3.PublicKey,
     amount: BN,
-) {
+): Promise<string> {
 
     const transaction = new solanaWeb3.Transaction()
 

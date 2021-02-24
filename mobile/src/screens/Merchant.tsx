@@ -8,6 +8,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   ScrollView,
+  Alert,
 } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import {useFocusEffect} from '@react-navigation/native';
@@ -16,11 +17,15 @@ import {getBalance} from '../crypto/balance';
 import {getData} from '../services/storageService';
 import {SOLANA_PRECISION} from '../utils/Constants';
 import Clipboard from '@react-native-clipboard/clipboard';
+import {transferTokensFromMerchant} from "../crypto/transfer";
 export const DismissKeyboard = ({children}: any) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
     {children}
   </TouchableWithoutFeedback>
 );
+import BN from 'bn.js';
+import {Loader} from "../components/loader";
+import {OWNER_ACCOUNT} from "../crypto/utils/constants";
 
 export default function MerchantScreen({navigation, route}: any) {
   const [value, onChangeText] = useState('');
@@ -32,6 +37,39 @@ export default function MerchantScreen({navigation, route}: any) {
       amount: data,
       address: accountAddress,
     });
+  };
+
+  const transferTokens = async () => {
+    const sourcePublicKeyStorage = await getData('tokenMerchantAccount');
+    const sourcePublicKey = new solanaWeb3.PublicKey(sourcePublicKeyStorage);
+    const balance = new BN(await getBalance(sourcePublicKey));
+
+    const destinationPublicKeyStorage = await getData('tokenAccount');
+    const destinationPublicKey = new solanaWeb3.PublicKey(destinationPublicKeyStorage);
+    return await transferTokensFromMerchant(
+      OWNER_ACCOUNT,
+      sourcePublicKey,
+      destinationPublicKey,
+      balance,
+    );
+  };
+
+  const [loading, setLoading] = useState(false);
+
+  const send = async () => {
+    setLoading(true);
+    await transferTokens()
+      .then((result) => {
+        console.log('transfer from merchant result', result);
+        Alert.alert('Success');
+      })
+      .catch((error) => {
+        console.log(error);
+        Alert.alert('Error');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   useFocusEffect(
@@ -49,7 +87,7 @@ export default function MerchantScreen({navigation, route}: any) {
   const [balanceCount, setBalance] = useState<number>();
 
   const balance = async () => {
-    const sourcePublicKeyStorage = await getData('tokenAccount');
+    const sourcePublicKeyStorage = await getData('tokenMerchantAccount');
     if (sourcePublicKeyStorage) {
       setAccountAddress(sourcePublicKeyStorage);
       const pk = new solanaWeb3.PublicKey(sourcePublicKeyStorage);
@@ -59,18 +97,19 @@ export default function MerchantScreen({navigation, route}: any) {
   };
 
   useEffect(() => {
-    balance();
+    balance().then();
   }, [route]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      balance();
+      balance().then();
     }, 1000);
     return () => clearInterval(interval);
   }, []);
 
   return (
     <View style={{backgroundColor: '#fff', flex: 1}}>
+      {loading && <Loader />}
       <DismissKeyboard>
         <ScrollView
           contentContainerStyle={{flexGrow: 1}}
@@ -116,6 +155,9 @@ export default function MerchantScreen({navigation, route}: any) {
                 placeholderTextColor={'#8C8C8C'}
               />
             </View>
+            <TouchableOpacity style={styles.button} onPress={send}>
+              <Text style={styles.textBtn}>Send to Wallet</Text>
+            </TouchableOpacity>
             <View style={{alignItems: 'center', marginTop: 40}}>
               <QRCode size={150} value={returnObj(value.replace(/,/g, '.'))} />
             </View>
@@ -150,5 +192,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#EBEBEB',
     borderRadius: 10,
     paddingHorizontal: 15,
+  },
+  button: {
+    paddingVertical: 10,
+    paddingHorizontal: 50,
+    fontWeight: '700',
+    fontSize: 23,
+    color: '#565656',
+    backgroundColor: '#EBEBEB',
+    borderRadius: 40,
+    marginTop: 40,
+  },
+  textBtn: {
+    textAlign: 'center',
+    fontWeight: '700',
   },
 });
