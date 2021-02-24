@@ -1,27 +1,11 @@
 import './global';
-
 import React, {useEffect} from 'react';
 import 'react-native-get-random-values';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  TouchableOpacity,
-} from 'react-native';
-
-import {Header, Colors} from 'react-native/Libraries/NewAppScreen';
-import * as solanaWeb3 from '@pragma-technologies/react-native-solana';
-import {createAndInitializeTokenAccount} from './src/crypto/account';
-import {transferTokens} from './src/crypto/transfer';
-
+import {StyleSheet, View} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {createStackNavigator, HeaderTitle} from '@react-navigation/stack';
+import {createStackNavigator} from '@react-navigation/stack';
 import 'react-native-get-random-values';
-// import solanaWeb3 from './src/utils/solanaWeb3';
 import MerchantScreen from './src/screens/Merchant';
 import WalletScreen from './src/screens/Wallet';
 import SavingsScreen from './src/screens/Savings';
@@ -30,34 +14,30 @@ import ScannerScreen from './src/screens/qr_scanner/Scanner';
 import MerchantIcon from './src/assets/images/merchant.svg';
 import WalletIcon from './src/assets/images/wallet.svg';
 import SavingIcon from './src/assets/images/savings.svg';
-import SettingIcon from './src/assets/images/setting.svg';
 import {getPullData} from './src/crypto/pool';
-import {
-  testCreatePoolTokenAccount,
-  testCreateTokenAccount,
-  testTransferTokens,
-  testCreateAuthority,
-} from './src/examples';
 import {getData, storeData} from './src/services/storageService';
-import {getBalance} from './src/crypto/balance';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {createTokenAccount, createPoolTokenAccount} from './src/crypto/account';
 
 const Tab = createBottomTabNavigator();
 const Main = createStackNavigator();
 
 const App: () => React$Node = () => {
   useEffect(() => {
-    testCreateTokenAccount().then(async (tokenAccount) => {
+    createTokenAccount().then(async (tokenAccount) => {
       if ((await getData('tokenAccount')) === null) {
         storeData('tokenAccount', tokenAccount.toString());
       }
     });
-    testCreatePoolTokenAccount().then(async (poolTokenAccount) => {
+    createTokenAccount().then(async (tokenAccount) => {
+      if ((await getData('tokenMerchantAccount')) === null) {
+        storeData('tokenMerchantAccount', tokenAccount.toString());
+      }
+    });
+    createPoolTokenAccount().then(async (poolTokenAccount) => {
       if ((await getData('poolTokenAccount')) === null) {
         storeData('poolTokenAccount', poolTokenAccount.toString());
       }
     });
-
     getPullData().then(async (res) => {
       if (
         (await getData('nonce')) === null ||

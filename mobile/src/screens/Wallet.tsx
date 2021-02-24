@@ -14,15 +14,19 @@ import ScanIcon from '../assets/images/qr.svg';
 // @ts-ignore
 import * as solanaWeb3 from '@pragma-technologies/react-native-solana';
 import {transferTokens} from '../crypto/transfer';
-import {SECRET, SOLANA_PRECISION} from '../utils/Constants';
-import {createAuthority, getPullData} from '../crypto/pool';
+import {SOLANA_PRECISION} from '../utils/Constants';
+import {createAuthority} from '../crypto/pool';
 import {getBalance} from '../crypto/balance';
 import {Loader} from '../components/loader';
 
 import BN from 'bn.js';
 import {addPrecision, getData} from '../services/storageService';
+import Clipboard from "@react-native-clipboard/clipboard";
+import {OWNER_ACCOUNT} from "../crypto/utils/constants";
 
 export default function WalletScreen({navigation, route}: any) {
+  const [accountAddress, setAccountAddress] = useState('');
+
   useFocusEffect(
     useCallback(() => {
       const stackNavigator = navigation.dangerouslyGetParent();
@@ -46,8 +50,6 @@ export default function WalletScreen({navigation, route}: any) {
   const [dataQR, setDataQR] = useState(route?.params?.data);
 
   const testTransferTokens = async () => {
-    const account = new solanaWeb3.Account(SECRET);
-
     const sourcePublicKeyStorage = await getData('tokenAccount');
     const pk = new solanaWeb3.PublicKey(sourcePublicKeyStorage);
     const balance = new BN(await getBalance(pk));
@@ -73,7 +75,7 @@ export default function WalletScreen({navigation, route}: any) {
       ),
     );
     return await transferTokens(
-      account,
+      OWNER_ACCOUNT,
       sourcePublicKey,
       destinationPublicKey,
       authority,
@@ -94,6 +96,7 @@ export default function WalletScreen({navigation, route}: any) {
     setLoading(true);
     await testTransferTokens()
       .then((result) => {
+        console.log('transfer result', result);
         Alert.alert('Success');
       })
       .catch((error) => {
@@ -104,6 +107,29 @@ export default function WalletScreen({navigation, route}: any) {
         setLoading(false);
       });
   };
+
+  const [balanceCount, setBalance] = useState<number>();
+
+  const balance = async () => {
+    const sourcePublicKeyStorage = await getData('tokenAccount');
+    if (sourcePublicKeyStorage) {
+      setAccountAddress(sourcePublicKeyStorage);
+      const pk = new solanaWeb3.PublicKey(sourcePublicKeyStorage);
+      const balance = await getBalance(pk);
+      setBalance(balance);
+    }
+  };
+
+  useEffect(() => {
+    balance().then();
+  }, [route]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      balance().then();
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     if (route?.params?.data) {
@@ -122,11 +148,35 @@ export default function WalletScreen({navigation, route}: any) {
             style={{
               flex: 1,
               paddingBottom: 100,
+              paddingTop: 20,
               backgroundColor: '#fff',
               paddingHorizontal: 20,
             }}>
-            <View style={{marginTop: 20}}>
+            <View>
               <Text style={styles.label}>Address</Text>
+              <View style={styles.infoBlockItem}>
+                <TouchableOpacity
+                    onPress={() => Clipboard.setString(accountAddress)}>
+                  <Text style={styles.address}>{accountAddress}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={{marginTop: 20}}>
+              <Text style={styles.label}>Balance</Text>
+              <View style={styles.infoBlockItem}>
+                <Text style={styles.balance}>
+                  {balanceCount
+                      ? parseFloat(
+                          (
+                              balanceCount / Math.pow(10, SOLANA_PRECISION) ?? 0
+                          ).toString(),
+                      ).toFixed(2)
+                      : 0}
+                </Text>
+              </View>
+            </View>
+            <View style={{marginTop: 20}}>
+              <Text style={styles.label}>Recipient</Text>
               <TextInput
                 style={styles.input}
                 onChangeText={(text) => setDataQR({...dataQR, address: text})}
@@ -162,6 +212,23 @@ export default function WalletScreen({navigation, route}: any) {
 }
 
 const styles = StyleSheet.create({
+  infoBlockItem: {
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    paddingVertical: 13,
+    paddingHorizontal: 15,
+  },
+  label: {fontSize: 15, color: '#8C8C8C', marginBottom: 5},
+  address: {
+    fontWeight: '800',
+    fontSize: 26,
+  },
+  balance: {
+    fontWeight: '800',
+    fontSize: 26,
+  },
   container: {
     flex: 1,
     justifyContent: 'center',

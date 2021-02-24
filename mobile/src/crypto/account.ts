@@ -1,6 +1,7 @@
 import * as solanaWeb3 from '@pragma-technologies/react-native-solana';
-import {ACCOUNT_LAYOUT, connection, TOKEN_PROGRAM_ID} from "./utils/constants";
+import {ACCOUNT_LAYOUT, connection, OWNER_ACCOUNT, SAVINGS_MINT, TOKEN_PROGRAM_ID} from "./utils/constants";
 import {initializeAccountInstruction} from "./utils/instructions";
+import {getPullData} from "./pool";
 
 export async function createAndInitializeTokenAccount(
     payer: solanaWeb3.Account,
@@ -40,3 +41,16 @@ export async function createAndInitializeTokenAccount(
         }
     )
 };
+
+export async function createTokenAccount(): Promise<solanaWeb3.PublicKey> {
+    const newAccount = new solanaWeb3.Account();
+    await createAndInitializeTokenAccount(OWNER_ACCOUNT, SAVINGS_MINT, newAccount);
+    return newAccount.publicKey;
+}
+
+export async function createPoolTokenAccount(): Promise<solanaWeb3.PublicKey> {
+    const newAccount = new solanaWeb3.Account();
+    const mintPublicKey = (await getPullData()).poolMint;
+    await createAndInitializeTokenAccount(OWNER_ACCOUNT, mintPublicKey, newAccount);
+    return newAccount.publicKey;
+}

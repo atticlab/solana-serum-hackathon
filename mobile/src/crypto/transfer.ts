@@ -71,3 +71,30 @@ export async function transferTokens(
     },
   );
 }
+
+export async function transferTokensFromMerchant(
+    ownerAccount: solanaWeb3.Account,
+    sourcePublicKey: solanaWeb3.PublicKey,
+    destPublicKey: solanaWeb3.PublicKey,
+    amount: BN,
+) {
+  const transaction = new solanaWeb3.Transaction();
+
+  transaction.add(
+      transferInstruction(
+          sourcePublicKey,
+          destPublicKey,
+          ownerAccount.publicKey,
+          amount,
+      ),
+  );
+
+  return await solanaWeb3.sendAndConfirmTransaction(
+      connection,
+      transaction,
+      [ownerAccount],
+      {
+        preflightCommitment: 'single',
+      },
+  );
+}
