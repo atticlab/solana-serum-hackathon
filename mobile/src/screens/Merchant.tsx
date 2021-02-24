@@ -4,7 +4,6 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  Clipboard,
   TouchableOpacity,
   Keyboard,
   TouchableWithoutFeedback,
@@ -16,7 +15,7 @@ import * as solanaWeb3 from '@pragma-technologies/react-native-solana';
 import {getBalance} from '../crypto/balance';
 import {getData} from '../services/storageService';
 import {SOLANA_PRECISION} from '../utils/Constants';
-
+import Clipboard from '@react-native-clipboard/clipboard';
 export const DismissKeyboard = ({children}: any) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
     {children}
@@ -86,23 +85,23 @@ export default function MerchantScreen({navigation, route}: any) {
             <View>
               <Text style={styles.label}>Address</Text>
               <View style={styles.infoBlockItem}>
-                <Text style={styles.address}>{`${accountAddress.substring(
-                  0,
-                  6,
-                )}…${accountAddress.substring(
-                  accountAddress.length - 4,
-                )}`}</Text>
+                <TouchableOpacity
+                  onPress={() => Clipboard.setString(accountAddress)}>
+                  <Text style={styles.address}>{accountAddress}</Text>
+                </TouchableOpacity>
               </View>
             </View>
             <View style={{marginTop: 20}}>
               <Text style={styles.label}>Balance</Text>
               <View style={styles.infoBlockItem}>
                 <Text style={styles.balance}>
-                  {parseFloat(
-                    (
-                      balanceCount / Math.pow(10, SOLANA_PRECISION) ?? 0
-                    ).toString(),
-                  ).toFixed(2)}
+                  {balanceCount
+                    ? parseFloat(
+                        (
+                          balanceCount / Math.pow(10, SOLANA_PRECISION) ?? 0
+                        ).toString(),
+                      ).toFixed(2)
+                    : 0}
                 </Text>
               </View>
             </View>

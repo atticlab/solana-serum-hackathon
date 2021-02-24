@@ -13,6 +13,7 @@
     "@hvrlk/buffer-layout": "1.0.0",
     "@pragma-technologies/react-native-solana": "^1.0.0",
     "@react-native-async-storage/async-storage": "^1.14.1",
+    "@react-native-clipboard/clipboard": "^1.6.0",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-navigation/bottom-tabs": "^5.11.7",
     "@react-navigation/native": "^5.9.2",
