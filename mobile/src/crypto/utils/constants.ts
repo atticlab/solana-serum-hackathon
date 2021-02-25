@@ -73,8 +73,8 @@ export const OWNER_ACCOUNT = new solanaWeb3.Account(Buffer.from([
 export const TOKEN_PROGRAM_ID = new solanaWeb3.PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
 export const CONTRACT_PROGRAM_ID = new solanaWeb3.PublicKey('CR8CRris6RDN8RHw4ANgt7rPTs771kGSu4vNgk76WGJ2');
 
-export const SAVINGS_MINT = new solanaWeb3.PublicKey('JLzcay8TWyWnyZPfGsgn6UhvJa7Nk7Ch45odKyykbXx');
-export const POOL_ACCOUNT = new solanaWeb3.PublicKey('B8em5p29s9mpGVgpgtNCvFkofbzv7RRGK7MCCSfqmCsw');
+export const SAVINGS_MINT = new solanaWeb3.PublicKey('TaMY1R8fqaSPs5ByEdCJFhFK2C36ec7HEia7NX7R59X');
+export const POOL_ACCOUNT = new solanaWeb3.PublicKey('2MqP18Se5vjsZDQ4UR3m4cPvG85GJHohZHTCmpp6SQfC');
 
 export const ACCOUNT_LAYOUT = BufferLayout.struct([
     BufferLayout.blob(32, 'mint'),
